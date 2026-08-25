@@ -1,0 +1,65 @@
+## What it does
+
+`land-the-work` takes work that is finished but uncommitted, puts it on a branch of its own, and commits it as a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/). It then offers to push the branch and open the merge or pull request, and only does either after you say yes.
+
+Conventional Commits is the fixed default for both the subject line and the branch name, not something inferred from the repo's own history: a `type/slug` branch and a `type(scope): summary` subject apply even in a repo whose past commits don't already look that way, since that history is exactly the debt the convention fixes going forward. A documented override in `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, or a commitlint config still wins where one exists.
+
+## When to reach for it
+
+Type `/land-the-work`, or the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) reaches for it automatically when a task fits.
+
+Reach for it at the moment the work is done and the tree is still dirty.
+
+| Your situation | Skill |
+| --- | --- |
+| Work finished, nothing committed yet | This one |
+| Work finished, and you want it reviewed before it is committed | [code-review](https://aihero.dev/skills-code-review) first, then this one |
+| Mid-merge or mid-rebase, git stopped on conflicts | [resolving-merge-conflicts](https://aihero.dev/skills-resolving-merge-conflicts), which finishes with its own commit |
+
+## Prerequisites
+
+Landing the commit needs nothing beyond the repo itself. Pushing and opening the request need `gh` (GitHub) or `glab` (GitLab) authenticated against the remote; without one configured, the skill stops at the commit the way it always did.
+
+## Landing, not saving
+
+A commit is not a save point. It is the unit a reviewer reads, and a month later it is the only account of why the change looks the way it does. So the message carries what the diff cannot: the decision behind the change, the constraint that forced an odd-looking choice, and anything the work turned up and deliberately left alone. That last one is the line most often missing, and the most expensive: a finding nobody wrote down is a finding rediscovered from scratch.
+
+The other half of landing is choosing where. The default branch is the default base, and one branch per [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) is the shape:
+
+| The work | Base to branch from |
+| --- | --- |
+| Independent of anything unmerged | The default branch, fetched and up to date |
+| Builds on commits that only exist on a feature branch | That feature branch |
+| Genuinely could go either way | Ask before branching |
+
+Staging is scoped the same way. The skill adds the paths the work touched, and asks about anything else it finds dirty rather than sweeping it into the commit, so two unrelated pieces of work in one tree become two commits.
+
+## Publishing, on request
+
+The skill's job doesn't have to stop at the commit anymore, but it never pushes or opens a request without asking first, since both put the work in front of other people. Say yes and it pushes the branch, then opens the PR or MR itself (`gh pr create` or `glab mr create`, picked from the remote), filling the repo's own template where one exists and otherwise writing a description with the feature description and the ticket it's for. Say no, or leave neither CLI configured, and it stops at the commit exactly as before, handing you the branch and the SHA to push yourself.
+
+## Common questions
+
+**Does it push and open the request automatically?**
+
+No. It reports the branch and SHA first and asks before doing either, because publishing the work is a decision worth making on purpose, not the reflexive tail of a commit. Say yes once and it does both together; say no and it stops, same as before this skill could publish at all.
+
+**Does `implement` not commit its own work?**
+
+No. It builds the work and closes out with [code-review](https://aihero.dev/skills-code-review), then stops, which leaves finished work sitting in a dirty tree on whatever branch you happened to be on. This skill is that missing step, and being model-invoked is what lets it fire there without being asked.
+
+**What if the repo's own commits don't look like Conventional Commits?**
+
+Conventional Commits is still the default. A messy history is a reason to start converging on a shape, not a reason to match the mess. An explicit override in `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, or a commitlint config still takes precedence, since that's a documented decision rather than habit.
+
+## It's working if
+
+- You are never on the default branch when the commit lands.
+- The branch name and the subject line are in Conventional Commits shape, unless the repo documents something else.
+- The commit body tells you something the diff does not, including anything the work found and left for later.
+- Nothing you did not intend to commit is in `git diff --cached --stat`.
+- It reports a branch and a SHA and asks before it pushes or opens anything; the request, when opened, has the feature description and the ticket in it, not a blank body.
+
+## Where it fits
+
+The last step of the main idea-to-ship flow: [implement](https://aihero.dev/skills-implement) builds the work and runs [code-review](https://aihero.dev/skills-code-review) over it, and this is what turns the reviewed result into a commit on a branch, and, on request, a merge or pull request too. It is also a reach-for-it-anytime standalone, since any finished change needs landing whether a spec produced it or not. Its nearest neighbour is [resolving-merge-conflicts](https://aihero.dev/skills-resolving-merge-conflicts), which owns the other place commits get made, mid-merge rather than end-of-work. [ask-matt](https://aihero.dev/skills-ask-matt) is the map for everything around it.
