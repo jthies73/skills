@@ -38,6 +38,8 @@ Staging is scoped the same way. The skill adds the paths the work touched, and a
 
 The skill's job doesn't have to stop at the commit anymore, but it never pushes or opens a request without asking first, since both put the work in front of other people. Say yes and it pushes the branch, then opens the PR or MR itself (`gh pr create` or `glab mr create`, picked from the remote), filling the repo's own template where one exists and otherwise writing a description with the feature description and the ticket it's for. Say no, or leave neither CLI configured, and it stops at the commit exactly as before, handing you the branch and the SHA to push yourself.
 
+How the issue gets referenced is a decision, not a formality. GitHub and GitLab both close a linked issue the moment the request merges, but only where the description carries a closing keyword: `Closes #123` closes it, a bare `#123` links it and leaves it open forever. So the skill picks on what the work actually did. Finished the issue outright, and it writes the keyword, so merging clears the tracker without anyone remembering to. Did part of it, and it references the issue without one and notes what is still outstanding, because an issue auto-closed with scope remaining is worse than one left open.
+
 ## Common questions
 
 **Does it push and open the request automatically?**
@@ -47,6 +49,10 @@ No. It reports the branch and SHA first and asks before doing either, because pu
 **Does `implement` not commit its own work?**
 
 No. It builds the work and closes out with [code-review](https://aihero.dev/skills-code-review), then stops, which leaves finished work sitting in a dirty tree on whatever branch you happened to be on. This skill is that missing step, and being model-invoked is what lets it fire there without being asked.
+
+**My issue didn't close when the request merged. Why?**
+
+Three usual reasons. The description linked the issue without a closing keyword, so the host had nothing to act on. Or the request targeted a feature branch rather than the default branch, which is the only merge the keyword fires on. Or the ticket lives in Jira, Linear, or Asana, where a GitHub or GitLab keyword means nothing and only that tracker's own integration can close it. The skill states which issues will close on merge when it reports the request, so a silence there is the signal to check.
 
 **What if the repo's own commits don't look like Conventional Commits?**
 
@@ -59,6 +65,7 @@ Conventional Commits is still the default. A messy history is a reason to start 
 - The commit body tells you something the diff does not, including anything the work found and left for later.
 - Nothing you did not intend to commit is in `git diff --cached --stat`.
 - It reports a branch and a SHA and asks before it pushes or opens anything; the request, when opened, has the feature description and the ticket in it, not a blank body.
+- Merging a request that finishes an issue closes that issue, and you were told it would before the merge happened. An issue the work only partly addresses stays open, with the remainder written down.
 
 ## Where it fits
 
