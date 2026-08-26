@@ -19,6 +19,13 @@ so there is one agent-instruction file, not two.
 
 Infer the repo from `git remote -v`; `gh` does this automatically when run inside a clone.
 
+## Landing conventions
+
+**Default reviewer:** none. Passed to `gh pr create --reviewer` when set.
+
+**Merging closes the referenced issue:** no. Issues move to `Review` when the request opens and are
+closed by hand at merge time, so `land-the-work` writes `Refs`, never `Closes`.
+
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_

@@ -34,7 +34,7 @@ GitHub Issues on `jthies73/skills`, via the `gh` CLI. See [.agents/issue-tracker
 
 ### Triage labels
 
-The five canonical roles, each label string equal to its name, but only `wontfix` (plus the `bug` and `enhancement` categories) exists on the tracker today; the rest are created on first use. See [.agents/triage-labels.md](./.agents/triage-labels.md).
+Board-shaped: the canonical roles map onto `TODO`/`In Progress`/`Review` columns, and `needs-triage` and `wontfix` map to no label at all. See [.agents/triage-labels.md](./.agents/triage-labels.md).
 
 ### Domain docs
 

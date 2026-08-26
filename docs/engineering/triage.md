@@ -22,6 +22,8 @@ You invoke this by typing `/triage` and then describing what you want in plain l
 
 `triage` reads and writes your issue tracker, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has to have configured that tracker and its label vocabulary first. The role names below are **canonical**; the label strings in your tracker may differ, and the mapping is what setup provides. If your tracker already uses the canonical names exactly, there is nothing to map and nothing to set up.
 
+A role maps to **zero or more** labels, which is what lets the same five roles drive a kanban board: map both ready roles to a `TODO` column label plus their own name, and map `needs-triage` and `wontfix` to nothing, so an untriaged issue is simply unlabelled and a rejected one is simply closed. The roles and the skill are unchanged; only the right-hand column of the mapping is.
+
 The tracker config also decides whether external pull requests count as a request surface, and who counts as external. That flag defaults to off and is no longer a setup question, so flip it in `docs/agents/issue-tracker.md` if you want PRs in scope.
 
 ## The state machine

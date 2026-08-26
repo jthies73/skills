@@ -28,6 +28,8 @@ Two **category** roles:
 - `bug`: something is broken
 - `enhancement`: new feature or improvement
 
+A tracker that maps one of these to no labels is saying the absence carries that meaning; there, categories are at-most-one rather than exactly-one.
+
 Five **state** roles:
 
 - `needs-triage`: maintainer needs to evaluate
@@ -38,9 +40,11 @@ Five **state** roles:
 
 For a PR, the same states read against the attached code: `ready-for-agent` means a brief is attached and an agent should take the next step on the diff; `ready-for-human` means it's ready for a human to merge.
 
-Every triaged issue should carry exactly one category role and one state role. If state roles conflict, flag it and ask the maintainer before doing anything else.
+Every triaged issue should carry one category role and one state role. If state roles conflict, flag it and ask the maintainer before doing anything else.
 
 These are canonical role names. The actual label strings used in the issue tracker may differ. The mapping should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
+
+A role maps to **zero or more** label strings, not necessarily one. Apply every label its role maps to, and remove the ones belonging to the role it's leaving. A role mapping to no labels is represented by their absence: an issue in that role carries no state label at all, which is how a board-shaped tracker models a backlog column or a closed-means-rejected convention. Read the mapping before you apply anything; never assume a role's label is its own name.
 
 State transitions: an unlabeled issue normally goes to `needs-triage` first; from there it moves to `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`. `needs-info` returns to `needs-triage` once the reporter replies. The maintainer can override at any time; flag transitions that look unusual and ask before proceeding.
 
@@ -58,7 +62,7 @@ The maintainer invokes `/triage` and describes what they want in natural languag
 Query the issue tracker and present three buckets, oldest first:
 
 1. **Unlabeled**: never triaged.
-2. **`needs-triage`**: evaluation in progress.
+2. **`needs-triage`**: evaluation in progress. Where that role maps to no labels, it and the unlabeled bucket are the same bucket; present one.
 3. **`needs-info` with reporter activity since the last triage notes**: needs re-evaluation.
 
 When PRs are in scope, include external PRs in these buckets and tag each line `[PR]` or `[issue]`. Discovery surfaces only *external* PRs (the tracker config defines who counts as external), so a collaborator's in-flight PR is not triage work. This filter is discovery-only; an explicitly named PR is always triaged regardless of author.

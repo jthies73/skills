@@ -16,12 +16,15 @@ _Avoid_: ticket (use only when quoting external systems that call them tickets, 
 A `wayfinder` unit: a child **Issue** of a `wayfinder:map` holding a *question* whose resolution is a decision, not a slice of a build to execute. The **decision** qualifier is what keeps it distinct from an implementation ticket; `wayfinder` introduces the term, then uses "ticket".
 
 **Triage role**:
-A canonical state-machine label applied to an **Issue** during triage (e.g. `needs-triage`, `ready-for-agent`). Each role maps to a real label string in the **Issue tracker** via this repo's `.agents/triage-labels.md` (other repos use `docs/agents/triage-labels.md`).
+A canonical state-machine role an **Issue** occupies during triage (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). Each role maps to **zero or more** real label strings in the **Issue tracker** via this repo's `.agents/triage-labels.md` (other repos use `docs/agents/triage-labels.md`). A role mapping to none is carried by the absence of a state label, which is how a board's backlog column and a rejected-means-closed convention are expressed.
+
+**In-flight role**:
+An optional **Triage role** for work already moving, `in-progress` or `in-review`, named in the same mapping. Naming one is what licenses a skill to move an **Issue**: `implement` claims into `in-progress`, `land-the-work` moves to `in-review`. Where the mapping omits them, neither skill touches the tracker.
 
 ## Relationships
 
 - An **Issue tracker** holds many **Issues**
-- An **Issue** carries one **Triage role** at a time
+- An **Issue** carries one **Triage role** at a time, represented by zero or more labels
 - A **Decision ticket** is an **Issue** (a child of a `wayfinder:map`)
 
 ## Flagged ambiguities

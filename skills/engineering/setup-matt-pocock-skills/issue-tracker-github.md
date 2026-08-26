@@ -13,6 +13,13 @@ Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all o
 
 Infer the repo from `git remote -v`; `gh` does this automatically when run inside a clone.
 
+## Landing conventions
+
+**Default reviewer:** none. Passed to `gh pr create --reviewer` when set.
+
+**Merging closes the referenced issue:** yes. On `no`, `land-the-work` writes `Refs` rather than a
+closing keyword, leaving the close to a human.
+
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_

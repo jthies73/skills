@@ -14,6 +14,12 @@ Issues and specs for this repo live as GitLab issues. Use the [`glab`](https://g
 
 Infer the repo from `git remote -v`; `glab` does this automatically when run inside a clone.
 
+## Landing conventions
+
+**Default reviewer:** none. Passed to `glab mr create --reviewer` when set.
+
+**Merging closes the referenced issue:** yes. On `no`, `land-the-work` writes `Refs` rather than a closing keyword, leaving the close to a human.
+
 ## Merge requests as a triage surface
 
 **MRs as a request surface: no.** _(Set to `yes` if this repo treats external merge requests as feature requests; `/triage` reads this flag.)_

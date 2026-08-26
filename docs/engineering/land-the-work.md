@@ -40,6 +40,8 @@ The skill's job doesn't have to stop at the commit anymore, but it never pushes 
 
 How the issue gets referenced is a decision, not a formality. GitHub and GitLab both close a linked issue the moment the request merges, but only where the description carries a closing keyword: `Closes #123` closes it, a bare `#123` links it and leaves it open forever. So the skill picks on what the work actually did. Finished the issue outright, and it writes the keyword, so merging clears the tracker without anyone remembering to. Did part of it, and it references the issue without one and notes what is still outstanding, because an issue auto-closed with scope remaining is worse than one left open.
 
+Two tracker-config fields change this, both optional. Set a **default reviewer** and it goes on every request it opens. Say **merging does not close the referenced issue**, which is usual on a board where a column rather than the merge marks done, and it writes `Refs` throughout and leaves closing to you. If your triage-labels mapping also names an **in-review role**, it moves each referenced issue there as the request opens.
+
 ## Common questions
 
 **Does it push and open the request automatically?**

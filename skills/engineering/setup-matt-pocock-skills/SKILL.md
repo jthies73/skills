@@ -9,7 +9,7 @@ disable-model-invocation: true
 Scaffold the per-repo configuration that the engineering skills assume:
 
 - **Issue tracker**: where issues live (GitHub by default; local markdown is also supported out of the box)
-- **Triage labels**: the strings used for the five canonical triage roles
+- **Triage labels**: the label strings each canonical triage role maps to
 - **Domain docs**: where `CONTEXT.md` and ADRs live, and the consumer rules for reading them
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
@@ -48,13 +48,19 @@ Default posture: these skills were designed for GitHub. If a `git remote` points
 
 Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off**. Leave it off and don't raise it: a user who wants external PRs in the triage queue can flip the flag in the file later.
 
+They also carry two **landing conventions** `land-the-work` reads, both fine to leave at their defaults. A **default reviewer**, defaulted to none: only raise it on a repo with more than one contributor, and never propose the user's own account, since the host refuses a review request from the request's own author and that setting breaks every publish. And **merging closes the referenced issue**, defaulted to yes: raise it only where the user says they close issues by hand after merge, which is usual on a board where a column, not the merge, marks done.
+
 **Section B: Triage label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you), since an uninstalled skill needs no labels.
 
 If it is installed, ask exactly one question:
 
 > Do you want to keep the default triage labels? (recommended: **yes**)
 
-The defaults are the five canonical roles, each label string equal to its name: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. On **yes**, write them as-is. Only if the user says no, usually because their tracker already uses other names (e.g. `bug:triage` for `needs-triage`), collect the overrides so `triage` applies existing labels instead of creating duplicates.
+The defaults are the five canonical roles, each mapping to one label of the same name: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. On **yes**, write `docs/agents/triage-labels.md` from the [triage-labels.md](./triage-labels.md) seed as-is.
+
+Only if the user says no, usually because their tracker already uses other names (e.g. `bug:triage` for `needs-triage`), collect the overrides so `triage` applies existing labels instead of creating duplicates. A role can map to **several** labels or to **none**, which is how a board-shaped repo is expressed: [triage-labels-kanban.md](./triage-labels-kanban.md) is a worked example where both ready roles carry a `TODO` column label and `needs-triage` carries nothing. Offer it when exploration found a board, or when the user describes columns rather than labels.
+
+Both seeds carry an optional **in-flight roles** section, left out by default. Include it only if the user wants `implement` to claim tickets and `land-the-work` to move them when it opens the request; without it neither skill touches the tracker.
 
 **Section C: Domain docs.** Default to **single-context** (one `CONTEXT.md` + `docs/adr/` at the repo root). This fits almost every repo; write it without asking.
 
@@ -106,7 +112,8 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [issue-tracker-github.md](./issue-tracker-github.md): GitHub issue tracker
 - [issue-tracker-gitlab.md](./issue-tracker-gitlab.md): GitLab issue tracker
 - [issue-tracker-local.md](./issue-tracker-local.md): local-markdown issue tracker
-- [triage-labels.md](./triage-labels.md): label mapping (only if `triage` is installed)
+- [triage-labels.md](./triage-labels.md): role-to-label mapping, canonical defaults (only if `triage` is installed)
+- [triage-labels-kanban.md](./triage-labels-kanban.md): the same mapping filled in for a board-shaped repo, as a worked example
 - [domain.md](./domain.md): domain doc consumer rules + layout
 
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
