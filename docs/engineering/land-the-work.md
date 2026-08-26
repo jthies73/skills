@@ -2,7 +2,7 @@
 
 `land-the-work` takes work that is finished but uncommitted, puts it on a branch of its own, and commits it as a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/). It then offers to push the branch and open the merge or pull request, and only does either after you say yes.
 
-Conventional Commits is the fixed default for both the subject line and the branch name, not something inferred from the repo's own history: a `type/slug` branch and a `type(scope): summary` subject apply even in a repo whose past commits don't already look that way, since that history is exactly the debt the convention fixes going forward. A documented override in `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, or a commitlint config still wins where one exists.
+Conventional Commits is the fixed default for both the subject line and the branch name, not something inferred from the repo's own history: a `type/slug` branch and a `type: summary` subject apply even in a repo whose past commits don't already look that way, since that history is exactly the debt the convention fixes going forward. A documented override in `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, or a commitlint config still wins where one exists.
 
 ## When to reach for it
 
