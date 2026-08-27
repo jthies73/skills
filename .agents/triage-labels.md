@@ -4,9 +4,11 @@ The skills speak in canonical triage roles. This file maps each role to the labe
 repo's tracker actually uses. A role maps to **zero or more** labels: apply all of them, and a role
 mapping to none is represented by the absence of any state label.
 
-This is the **board** mapping, for a repo run off a kanban board. Its shape comes entirely from the
-right-hand columns: the skills are unchanged, they just read a different mapping. For a repo with no
-board, use [triage-labels-flat.md](./triage-labels-flat.md) instead.
+This repo runs off a board (GitHub Issues on `jthies73/skills`). Its shape comes entirely from the
+right-hand columns: the skills are unchanged, they just read this mapping.
+
+**Verified against the tracker on 2026-08-26.** The `wontfix` and `epic` labels are new with this
+mapping and need creating; the rest exist.
 
 ## The board
 
@@ -115,10 +117,9 @@ them.
 Nine labels: `TODO`, `In Progress`, `Review`, `On Hold`, `ready-for-agent`, `ready-for-human`,
 `wontfix`, `bug`, `epic`.
 
-**On GitLab, a group-level board can only build its lists from group labels.** Project labels are
-invisible to it. So where one board spans many repos in a group, create all nine as **group**
-labels, once, and every repo's copy of this file just names them. Creating them per project means
-creating them N times, and they will drift.
+All nine are **repository** labels here: GitHub has no organisation-level labels, so a single repo's
+board reads them directly. On GitLab a group-level board can only build its lists from **group**
+labels, which is where a board spanning many repos in a group would put them.
 
-Edit the right-hand columns to match the vocabulary you actually use, and keep them honest: a table
-asserting labels nobody created is worse than no table, because every skill reads it as fact.
+Keep the right-hand columns honest: a table asserting labels nobody created is worse than no table,
+because every skill reads it as fact.

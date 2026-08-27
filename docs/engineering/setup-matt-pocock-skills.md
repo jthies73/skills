@@ -32,8 +32,14 @@ It leads each section with the recommended answer, and skips whatever exploratio
 | Decision | What it proposes | When it actually asks |
 | --- | --- | --- |
 | **Issue tracker** | the one matching your `git remote` | always: this is the one real choice |
-| **Triage labels** | keep the five canonical names (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) | only if the `triage` skill is installed |
+| **Triage labels** | a **kanban board** mapping (Backlog / TODO / In Progress / Review / On Hold, with Done carried by the closed state) | only if the `triage` skill is installed |
 | **Domain docs** | single-context: one `CONTEXT.md` plus `docs/adr/` at the root | only if it spots monorepo signals, and then it offers a multi-context `CONTEXT-MAP.md` |
+
+The label question is a single yes-or-no: **do you run a kanban board for this repo?** Say yes and you get the board mapping, where the column labels sit on **Deliverables** only and a **Subtask** carries a readiness label and no column label, which is what keeps it off the board. Say no and you get the flat mapping: five roles, one label each, named after the role.
+
+Answering yes also decides something the flat mapping leaves optional. On a board, `In Progress` and `Review` are columns, so the **in-flight roles** come with it, which is what licenses [implement](https://aihero.dev/skills-implement) to claim a card and [land-the-work](https://aihero.dev/skills-land-the-work) to move it when the request opens. On the flat mapping those roles stay opt-in, and without them neither skill touches your tracker at all.
+
+No skill knows which answer you gave. A board is a right-hand column in one markdown file.
 
 The tracker options:
 
@@ -64,10 +70,21 @@ Known gap, still open. The file-selection rule is "edit `CLAUDE.md` if it exists
 
 **It didn't create my triage labels.**
 
-It doesn't. `docs/agents/triage-labels.md` is a *mapping*: it tells `/triage` which strings in your tracker correspond to the five canonical roles. It does not run `gh label create`. On a fresh GitHub repo the labels genuinely do not exist yet, and this has been filed as a bug more than once. Two follow-ons:
+It does now. This was filed as a bug more than once, and the reason it mattered is in the seed's own warning: a mapping table asserting labels nobody created is worse than no table, because every skill reads it as fact. Setup lists what your tracker actually has, reports each of the mapping's labels as present or missing, and **offers** to create the missing ones. It won't create anything unasked.
 
-- If your tracker already uses the canonical names, the mapping is an identity table and there is nothing to configure. That is the intended common case, not a missing step.
-- [wayfinder](https://aihero.dev/skills-wayfinder)'s `wayfinder:map` and `wayfinder:<type>` labels are not created here either, and `gh issue create --label <missing>` fails outright rather than creating the label. Create them by hand before the first wayfinder run on a GitHub repo.
+Three follow-ons:
+
+- If your tracker already uses the canonical names, the mapping is an identity table and there is nothing to create. That is the intended common case, not a missing step.
+- A role maps to zero or more labels, which is how a board is described: `ready-for-agent` becomes a `TODO` column label plus its own name, and `needs-triage` becomes no label at all, so the Backlog column is simply the unlabelled issues.
+- [wayfinder](https://aihero.dev/skills-wayfinder)'s `wayfinder:map` and `wayfinder:<type>` labels are still not covered here, and `gh issue create --label <missing>` fails outright rather than creating the label. Create them by hand before the first wayfinder run on a GitHub repo.
+
+**I have twenty repos in one GitLab group and want one board across all of them.**
+
+Then the labels belong on the **group**, not the projects. A group-level board can only build its lists from group labels; project labels are invisible to it, so per-project labels can't give one person a single cross-repo view, and creating them twenty times guarantees they drift. Setup asks for the group path on GitLab for exactly this, creates the vocabulary there once, and from the second repo onward finds everything present and says so in a line.
+
+Each repo still carries its own copy of `triage-labels.md`, and that is deliberate: every skill reads it from the repo root with no network call, and the file only changes when the board does. What has to agree across repos is the labels on the group, and a drifted copy announces itself the first time a skill applies a label that doesn't exist.
+
+On GitHub there is no equivalent: labels are per-repository, so the vocabulary gets created in each repo, and a cross-repo view is an organisation-level GitHub Project.
 
 **Can I configure the other skills' behaviour here ([grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) cadence, question format, tone)?**
 
@@ -85,7 +102,7 @@ One long-standing complaint says yes, in these words: *"having a skill to set up
 
 - `docs/agents/issue-tracker.md` and `docs/agents/domain.md` exist, plus `triage-labels.md` if `triage` is installed.
 - An `## Agent skills` section appears in the instruction file your harness actually reads, with a one-line summary pointing at each of those files.
-- The tracker it proposed matches the remote you really use, and the label strings match labels that really exist in your tracker.
+- The tracker it proposed matches the remote you really use, and it told you which of the mapping's labels already exist and which it would have to create.
 - Afterwards, `/to-tickets` publishes without asking you where issues live, and `/triage` applies labels rather than inventing them.
 - Nothing in the skill files themselves changed. If setup edited a `SKILL.md`, something went wrong.
 

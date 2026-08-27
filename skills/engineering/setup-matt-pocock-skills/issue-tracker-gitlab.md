@@ -14,6 +14,42 @@ Issues and specs for this repo live as GitLab issues. Use the [`glab`](https://g
 
 Infer the repo from `git remote -v`; `glab` does this automatically when run inside a clone.
 
+## Deliverable and Subtask operations
+
+Used by `to-tickets` and `implement`. A **Deliverable** is one issue, one branch, one merge request; a
+**Subtask** is a child issue of it, worked on the parent's branch.
+
+- **Create a Subtask**: GitLab's native child type is a **Task** work item, created through GraphQL
+  (`workItemCreate`), not `glab issue create`. Where that isn't available or convenient, create a
+  plain issue with `Part of #<deliverable>` at the top of its description, and add `- [ ] #<subtask>`
+  to the Deliverable's description so GitLab renders a linked checklist. Both shapes work; pick one
+  per repo and stay with it.
+- **List a Deliverable's Subtasks**: read the Deliverable's task list, or query its child work items.
+- **Close a Subtask**: `glab issue close <n>` (post the explanation first with `glab issue note`).
+  Closing a Deliverable does **not** close its children, so `implement` closes each one as it
+  finishes it.
+
+## Label operations
+
+Used by `/setup-matt-pocock-skills` to verify the mapping is honest.
+
+- **Project labels**: `glab label list`, `glab label create --name "TODO" --color "#428BCA"`
+- **Group labels**: `glab api "groups/<group-path>/labels?per_page=100"` to list, and
+  `glab api --method POST "groups/<group-path>/labels" -f name="TODO" -f color="#428BCA"` to create.
+  URL-encode a nested path (`dev%2Fplatform`).
+
+**A group-level board can only build its lists from group labels.** Project labels are invisible to
+it. So where one board spans many repos in a group, create the board vocabulary once as **group**
+labels and let every repo's mapping file name them.
+
+## Landing conventions
+
+**Default reviewer:** none. Passed to `glab mr create --reviewer` when set.
+
+**Merging closes the referenced issue:** yes. On `no`, `land-the-work` writes `Refs` rather than a closing keyword, leaving the close to a human.
+
+On a board-shaped tracker this stays `yes`: the human reviews the diff and merges, and that merge is the Review to Done transition, so a `Refs` here would leave every finished card sitting in Review forever.
+
 ## Merge requests as a triage surface
 
 **MRs as a request surface: no.** _(Set to `yes` if this repo treats external merge requests as feature requests; `/triage` reads this flag.)_

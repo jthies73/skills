@@ -2,6 +2,12 @@
 
 Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
 
+## This repo
+
+`jthies73/skills` on github.com. `gh` is installed and authenticated; it infers the repo
+from `git remote -v` when run inside the clone. `AGENTS.md` is a symlink to `CLAUDE.md`,
+so there is one agent-instruction file, not two.
+
 ## Conventions
 
 - **Create an issue**: `gh issue create --title "..." --body "..."`. Use a heredoc for multi-line bodies.
@@ -42,10 +48,9 @@ Project, whose lists can be built from its own Status field or from these labels
 
 **Default reviewer:** none. Passed to `gh pr create --reviewer` when set.
 
-**Merging closes the referenced issue:** yes. On `no`, `land-the-work` writes `Refs` rather than a
-closing keyword, leaving the close to a human.
-
-On a board-shaped tracker this stays `yes`: the human reviews the diff and merges, and that merge is the Review to Done transition, so a `Refs` here would leave every finished card sitting in Review forever.
+**Merging closes the referenced issue:** yes. A Deliverable moves to `Review` when the request opens,
+and the merge is what moves it to Done, so `land-the-work` writes `Closes` on a Deliverable it
+finishes outright.
 
 ## Pull requests as a triage surface
 
