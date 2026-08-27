@@ -28,6 +28,8 @@ Two **category** roles:
 - `bug`: something is broken
 - `enhancement`: new feature or improvement
 
+A tracker that maps one of these to no labels is saying the absence carries that meaning; there, categories are at-most-one rather than exactly-one.
+
 Five **state** roles:
 
 - `needs-triage`: maintainer needs to evaluate
@@ -38,9 +40,13 @@ Five **state** roles:
 
 For a PR, the same states read against the attached code: `ready-for-agent` means a brief is attached and an agent should take the next step on the diff; `ready-for-human` means it's ready for a human to merge.
 
-Every triaged issue should carry exactly one category role and one state role. If state roles conflict, flag it and ask the maintainer before doing anything else.
+Every triaged issue should carry one category role and one state role. If state roles conflict, flag it and ask the maintainer before doing anything else.
 
 These are canonical role names. The actual label strings used in the issue tracker may differ. The mapping should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
+
+Roles are carried by **Deliverables**. A **Subtask** never goes through this machine: `to-tickets` publishes it already refined, and triaging it would be re-triaging its parent.
+
+A role maps to **zero or more** label strings, not necessarily one. Apply every label its role maps to, and remove the ones belonging to the role it's leaving. A role mapping to no labels is represented by their absence: an issue in that role carries no state label at all, which is how a board-shaped tracker models a backlog column or a closed-means-rejected convention. Read the mapping before you apply anything; never assume a role's label is its own name.
 
 State transitions: an unlabeled issue normally goes to `needs-triage` first; from there it moves to `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`. `needs-info` returns to `needs-triage` once the reporter replies. The maintainer can override at any time; flag transitions that look unusual and ask before proceeding.
 
@@ -58,8 +64,10 @@ The maintainer invokes `/triage` and describes what they want in natural languag
 Query the issue tracker and present three buckets, oldest first:
 
 1. **Unlabeled**: never triaged.
-2. **`needs-triage`**: evaluation in progress.
+2. **`needs-triage`**: evaluation in progress. Where that role maps to no labels, it and the unlabeled bucket are the same bucket; present one.
 3. **`needs-info` with reporter activity since the last triage notes**: needs re-evaluation.
+
+**Subtasks are not triage work.** A **Subtask** is a child of a **Deliverable**, published already-refined by `to-tickets`, and it carries a readiness label but no state or column label. On a mapping where `needs-triage` maps to no labels, that would put every Subtask in the repo in bucket 1. So the untriaged bucket is issues carrying **neither a state label nor a readiness label**, which is a raw report and nothing else. Decide this on the labels alone: no parentage lookup, since that is host-specific and version-specific, and the label rule already excludes every Subtask.
 
 When PRs are in scope, include external PRs in these buckets and tag each line `[PR]` or `[issue]`. Discovery surfaces only *external* PRs (the tracker config defines who counts as external), so a collaborator's in-flight PR is not triage work. This filter is discovery-only; an explicitly named PR is always triaged regardless of author.
 
@@ -88,6 +96,8 @@ Show counts and a one-line summary per item. Let the maintainer pick.
 ## Quick state override
 
 If the maintainer says "move #42 to ready-for-agent", trust them and apply the role directly. Confirm what you're about to do (role changes, comment, close), then act. Skip grilling. If moving to `ready-for-agent` without a grilling session, ask whether they want to write an agent brief.
+
+This is the second door into a board's ready column, and the right one for work small enough that the agent brief is the whole spec. The other is `to-tickets`, which moves a Deliverable there once it has both a filled spec and published Subtasks.
 
 ## Needs-info template
 

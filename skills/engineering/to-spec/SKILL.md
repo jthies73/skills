@@ -16,7 +16,9 @@ The issue tracker and triage label vocabulary should have been provided to you. 
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+3. Write the spec using the template below, then publish it. Where the user brought you an existing issue, write the spec into **that issue's body**: it is the **Deliverable**, and `to-tickets` will hang its Subtasks off it and move it into the ready role. Where there is no such issue, create one on the project issue tracker.
+
+   Leave the state role alone: the Deliverable becomes ready once `to-tickets` has published its Subtasks, and labelling it ready here would put an unsplit card in a ready column. Where the build is small enough to skip `to-tickets` entirely, apply the ready role yourself and say that you did.
 
 <spec-template>
 
