@@ -26,24 +26,39 @@ The same-session case is worth naming because the skill's own first line doesn't
 
 ## Prerequisites
 
-`implement` writes its changes directly to the branch you are on. It does not create one, and it does not commit for you: check you are on the branch you want the work on before you start. Everything a Deliverable's Subtasks produce lands on that one branch, across as many sessions as it takes, and [land-the-work](https://aihero.dev/skills-land-the-work) opens one merge request from it at the end.
+`implement` takes the branch and the working directory itself. It creates the Deliverable's branch, named `type/slug` in Conventional Commits shape, in a [git worktree](https://git-scm.com/docs/git-worktree) of its own at `../<repo>-<slug>`, and builds there rather than in the checkout you invoked it from. The branch you were sitting on is left exactly as it was. What it still does not do is commit for you. Everything a Deliverable's Subtasks produce lands on that one branch, across as many sessions as it takes, and [land-the-work](https://aihero.dev/skills-land-the-work) opens one merge request from it at the end, run from inside that worktree.
 
 If the Subtasks came from [to-tickets](https://aihero.dev/skills-to-tickets), the tracker they live on was configured by [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills). `code-review` reads the same configuration to find the originating spec at close-out.
 
 ## What one run does
 
-A run is six beats, in order:
+A run is seven beats, in order:
 
 1. Claim the Deliverable: refuse it if it is unrefined, otherwise self-assign and move it to the in-progress role, as the first write.
-2. Read the Subtask or spec and work out the seams.
-3. Drive [tdd](https://aihero.dev/skills-tdd) at the pre-agreed seams, one red-green slice at a time.
-4. Typecheck often, run single test files as it goes.
-5. Run the full test suite once, at the end. Close the Subtask.
-6. Run [code-review](https://aihero.dev/skills-code-review), then stop.
+2. Take the branch: `type/slug` from the default branch, in its own worktree, with dependencies installed. Reattach where a worktree for this Deliverable already exists.
+3. Read the Subtask or spec and work out the seams.
+4. Drive [tdd](https://aihero.dev/skills-tdd) at the pre-agreed seams, one red-green slice at a time.
+5. Typecheck often, run single test files as it goes.
+6. Run the full test suite once, at the end. Close the Subtask.
+7. Run [code-review](https://aihero.dev/skills-code-review), then stop, reporting the worktree path.
 
 One run covers one **Subtask**. The Subtasks [to-tickets](https://aihero.dev/skills-to-tickets) produces are tracer-bullet vertical slices sized to fit a single fresh [context window](https://www.aihero.dev/ai-coding-dictionary/context-window), so the intended rhythm is: clear context, implement the next Subtask, clear again. They are ordered, not independently grabbable, and they all land on the Deliverable's one branch. Claiming is idempotent, so a second run on an already-claimed Deliverable is just picking up the next Subtask.
 
 Where a Subtask needs a person (it carries the `ready-for-human` readiness label, or turns out to need a credential, a dashboard, or a judgment call), the run stops there rather than guessing or skipping ahead, comments what is needed, and points at [wizard](https://aihero.dev/skills-wizard).
+
+## One Deliverable, one worktree
+
+A [worktree](https://git-scm.com/docs/git-worktree) is a second checkout of the same repository: its own working directory, its own index, its own `HEAD`, sharing one object store and one set of refs with the original. `implement` creates one per Deliverable at `../<repo>-<slug>`, takes the branch there, and does every subsequent thing in it. Nothing about the checkout you invoked it from changes, including how dirty it was.
+
+That isolation is the whole reason it is there: it is what makes several agents at once safe, one per Deliverable. Four consequences are worth knowing before the first run.
+
+**The diff lives in the worktree, and only there.** Committed work is shared, so `git diff main...feat/42-slug` reads it from any checkout of the repo. An uncommitted diff is not shared: it belongs to one worktree's index. `implement` deliberately leaves the work uncommitted, so the finished diff is read with `git -C ../repo-42-slug diff`, or by opening that directory in your editor. It is also why [land-the-work](https://aihero.dev/skills-land-the-work) has to run **inside** the worktree; run it in your original checkout and it finds a clean tree and nothing to land.
+
+**A fresh worktree is missing everything gitignored.** No `node_modules`, no `.env`, no build cache. The skill installs dependencies before running anything, because otherwise the first test run fails on the wrong thing entirely. Machine-local files it cannot regenerate, credentials most of all, are yours to copy across.
+
+**A later Subtask reattaches to the same worktree.** One Deliverable gets one branch and one directory, across as many sessions as it takes. `git worktree add` refuses a branch already checked out elsewhere, and the skill reads that refusal as "go find it", never as "make a second branch".
+
+**`git stash` is still shared.** `refs/stash` is a ref, and refs are the one thing worktrees do not separate. A stash pushed in one session is popped by another. The skill is told not to reach for it; the same caution applies to you while parallel runs are in flight.
 
 ## Pre-agreed seams
 
@@ -63,11 +78,13 @@ At the *start*, if your triage-labels mapping names an **in-progress role**, `im
 
 **Can I point it at all my Subtasks at once, or run several in parallel?**
 
-No, and inside one Deliverable that is by design: the Subtasks are ordered and share a branch, so there is nothing to parallelise. Parallelism lives one level up, across sibling Deliverables whose blockers are done. Batch dispatch across a ticket queue and [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent) fan-out are both requested repeatedly, and neither exists. Running several `/implement` sessions side by side in one checkout is worse than unsupported: one field report describes a `git commit --amend` in one session landing on another session's commit, a stash vanishing from `refs/stash`, and commits landing on the wrong branch, all in a single afternoon across three issues. The sessions share one working directory, one index, and one HEAD. Git worktrees are the community workaround, and note that `refs/stash` is shared across worktrees too, so worktrees alone do not fix the stash case. If you want parallelism today, you are assembling it yourself.
+Not at once, and inside one Deliverable that is by design: the Subtasks are ordered and share a branch, so there is nothing to parallelise. Across sibling Deliverables whose blockers are done, run as many as you like. That is what the worktree is for: each session gets its own working directory, index, and HEAD, so the failure people used to hit here (a `git commit --amend` in one session landing on another session's commit, commits arriving on the wrong branch, all in a single afternoon across three issues) has nothing left to collide over. Open a session per Deliverable and invoke `/implement` in each.
+
+Two things worktrees do not fix. `refs/stash` is shared across all of them, so `git stash` is still a cross-session hazard; the skill is told not to reach for it, and neither should you. And batch dispatch across a ticket queue, one invocation that burns down five Subtasks, still does not exist: dispatch is one `/implement` per session, by you.
 
 **Why doesn't it commit or open a pull request for me?**
 
-It used to commit straight to the current branch at the end of a run, which several people found too eager: the code landed before they had a chance to verify it worked. It now stops after `code-review` instead, leaving the diff sitting uncommitted in your working tree. [land-the-work](https://aihero.dev/skills-land-the-work) is the step after it, and it is the one that branches, commits, and offers to push and open the request. It is model-invoked, so the agent will often reach for it once the work is finished; run it by hand in a fresh window when you want the split to be deliberate.
+It used to commit straight to the current branch at the end of a run, which several people found too eager: the code landed before they had a chance to verify it worked. It now stops after `code-review` instead, leaving the diff sitting uncommitted in the worktree it built in. [land-the-work](https://aihero.dev/skills-land-the-work) is the step after it, and it is the one that commits and offers to push and open the request. It is model-invoked, so the agent will often reach for it once the work is finished; run it by hand in a fresh window when you want the split to be deliberate, and run it **in the worktree**, since an uncommitted diff is invisible from anywhere else.
 
 **`code-review` says it cannot see my changes.**
 
@@ -88,10 +105,12 @@ Probably the Subtask is too big rather than the skill being misused. A run does 
 - The session opens by reading the Subtask or spec and restating what it will build, rather than asking you what to build.
 - An unrefined Deliverable gets refused with `/triage` named, instead of built.
 - The first tracker write is the claim: self-assigned, moved into the in-progress role.
+- A worktree appears next to your repo, named for the Deliverable, and the branch you were on when you invoked it is untouched.
+- A second session on the same Deliverable reattaches to that worktree instead of creating a second branch.
 - You can see an actual `/tdd` invocation in the trace, not just tests appearing in the diff.
 - Typechecks and single test files run repeatedly during the run, and the full suite runs once near the end.
 - The Subtask closes when it is done, so the Deliverable's child list reads as a progress bar.
-- The run reaches `code-review` without you prompting it to carry on, then stops there, leaving the diff uncommitted in your working tree.
+- The run reaches `code-review` without you prompting it to carry on, then stops there, reporting the worktree path and leaving the diff uncommitted inside it.
 - The diff is one Subtask's worth of change: a vertical slice through every layer, not several swept together.
 
 ## Where it fits
@@ -102,7 +121,7 @@ Probably the Subtask is too big rather than the skill being misused. A run does 
 grill-with-docs → to-spec → to-tickets → implement → code-review
 ```
 
-Its neighbours are [to-tickets](https://aihero.dev/skills-to-tickets), which produces the Deliverable and the ordered Subtasks it consumes; [tdd](https://aihero.dev/skills-tdd), which it drives internally at each seam; [code-review](https://aihero.dev/skills-code-review), which it runs as the last step; and [land-the-work](https://aihero.dev/skills-land-the-work), which takes the reviewed diff from there onto a branch and into a merge request. It sits downstream of the planning skills and trusts them. It does not re-validate the shape of what it was handed, so a badly-structured map or a horizontally-layered ticket gets built as written.
+Its neighbours are [to-tickets](https://aihero.dev/skills-to-tickets), which produces the Deliverable and the ordered Subtasks it consumes; [tdd](https://aihero.dev/skills-tdd), which it drives internally at each seam; [code-review](https://aihero.dev/skills-code-review), which it runs as the last step; and [land-the-work](https://aihero.dev/skills-land-the-work), which takes the reviewed diff from the worktree into a commit and a merge request. It sits downstream of the planning skills and trusts them. It does not re-validate the shape of what it was handed, so a badly-structured map or a horizontally-layered ticket gets built as written.
 
 That trust is why [wayfinder](https://aihero.dev/skills-wayfinder) merges onto the chain at [to-spec](https://aihero.dev/skills-to-spec) rather than looping its map straight into `implement`. Go straight to `implement` from a map only when the effort turned out genuinely small.
 
