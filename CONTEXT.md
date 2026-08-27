@@ -13,7 +13,7 @@ A single tracked unit of work inside an **Issue tracker**. The generic term: a *
 _Avoid_: ticket (use only when quoting external systems that call them tickets, or for a **Decision ticket**, see below)
 
 **Deliverable**:
-An **Issue** that is one unit of delivery: one branch, one merge request, one card on a board, several commits. What `implement` claims and `land-the-work` lands. On a board-shaped tracker it is the only thing that carries a column label.
+An **Issue** that is one unit of delivery: one branch, one worktree, one merge request, one card on a board, several commits. What `implement` claims, branches, and builds, and what `land-the-work` lands. On a board-shaped tracker it is the only thing that carries a column label.
 _Avoid_: card, epic, parent ticket
 
 **Subtask**:
