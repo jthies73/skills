@@ -34,7 +34,7 @@ GitHub Issues on `jthies73/skills`, via the `gh` CLI. See [.agents/issue-tracker
 
 ### Triage labels
 
-Board-shaped: the canonical roles map onto `TODO`/`In Progress`/`Review`/`On Hold` columns, `needs-triage` maps to no label at all, and Done is the closed state. Column labels sit on **Deliverables** only; a **Subtask** carries a readiness label and no column label, which is what keeps it off the board. See [.agents/triage-labels.md](./.agents/triage-labels.md) and [ADR-0003](./.agents/adr/0003-deliverable-is-the-unit-of-delivery.md).
+Board-shaped: the canonical roles map onto `Backlog`/`TODO`/`In Progress`/`Review`/`On Hold` columns, and Done is the closed state. Column labels sit on **Deliverables** only; a **Subtask** carries a readiness label and no column label, which is what keeps it off the board. See [.agents/triage-labels.md](./.agents/triage-labels.md) and [ADR-0003](./.agents/adr/0003-deliverable-is-the-unit-of-delivery.md).
 
 ### Domain docs
 

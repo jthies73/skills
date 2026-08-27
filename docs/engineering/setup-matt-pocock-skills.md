@@ -75,7 +75,7 @@ It does now. This was filed as a bug more than once, and the reason it mattered 
 Three follow-ons:
 
 - If your tracker already uses the canonical names, the mapping is an identity table and there is nothing to create. That is the intended common case, not a missing step.
-- A role maps to zero or more labels, which is how a board is described: `ready-for-agent` becomes a `TODO` column label plus its own name, and `needs-triage` becomes no label at all, so the Backlog column is simply the unlabelled issues.
+- A role maps to zero or more labels, which is how a board is described: `ready-for-agent` becomes a `TODO` column label plus its own name, and `wontfix` becomes a label plus the closed state.
 - [wayfinder](https://aihero.dev/skills-wayfinder)'s `wayfinder:map` and `wayfinder:<type>` labels are still not covered here, and `gh issue create --label <missing>` fails outright rather than creating the label. Create them by hand before the first wayfinder run on a GitHub repo.
 
 **I have twenty repos in one GitLab group and want one board across all of them.**

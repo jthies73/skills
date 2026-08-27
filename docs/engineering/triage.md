@@ -22,7 +22,7 @@ You invoke this by typing `/triage` and then describing what you want in plain l
 
 `triage` reads and writes your issue tracker, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has to have configured that tracker and its label vocabulary first. The role names below are **canonical**; the label strings in your tracker may differ, and the mapping is what setup provides. If your tracker already uses the canonical names exactly, there is nothing to map and nothing to set up.
 
-A role maps to **zero or more** labels, which is what lets the same five roles drive a kanban board: map both ready roles to a `TODO` column label plus their own name, and map `needs-triage` and `wontfix` to nothing, so an untriaged issue is simply unlabelled and a rejected one is simply closed. The roles and the skill are unchanged; only the right-hand column of the mapping is.
+A role maps to **zero or more** labels, which is what lets the same five roles drive a kanban board: map both ready roles to a `TODO` column label plus their own name, map `needs-triage` to a `Backlog` column label, and let the host's built-in Closed list carry Done with no label at all. The roles and the skill are unchanged; only the right-hand column of the mapping is.
 
 The tracker config also decides whether external pull requests count as a request surface, and who counts as external. That flag defaults to off and is no longer a setup question, so flip it in `docs/agents/issue-tracker.md` if you want PRs in scope.
 
@@ -38,7 +38,7 @@ Every triaged item ends up carrying one category role and one state role. Two ca
 | `ready-for-human` | The same brief, plus why this can't be delegated: judgment, external access, manual testing. |
 | `wontfix` | Closed, with the reason recorded. |
 
-That is the whole vocabulary, and the one-state-role invariant is what keeps the queries simple. A role can map to no label at all, which is how a board models its Backlog column: there the absence of a state label *is* the role, so "one role" does not always mean "one label". It is also the most-requested area of the [skill](https://www.aihero.dev/ai-coding-dictionary/skill): users have asked for a sixth state for work that is specified but blocked on another issue, for `deferred` work gated on a future trigger, and for a terminal `implemented` state. None of those has shipped. See the questions below.
+That is the whole vocabulary, and the one-state-role invariant is what keeps the queries simple. A role can map to more than one label, or to none at all: on a board `ready-for-agent` is a `TODO` column label plus its own name, and a category can be carried by an absence, so "one role" does not always mean "one label". It is also the most-requested area of the [skill](https://www.aihero.dev/ai-coding-dictionary/skill): users have asked for a sixth state for work that is specified but blocked on another issue, for `deferred` work gated on a future trigger, and for a terminal `implemented` state. None of those has shipped. See the questions below.
 
 `wontfix` splits three ways, and the difference matters because only one of them writes to the knowledge base:
 

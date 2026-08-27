@@ -46,7 +46,7 @@ These are canonical role names. The actual label strings used in the issue track
 
 Roles are carried by **Deliverables**. A **Subtask** never goes through this machine: `to-tickets` publishes it already refined, and triaging it would be re-triaging its parent.
 
-A role maps to **zero or more** label strings, not necessarily one. Apply every label its role maps to, and remove the ones belonging to the role it's leaving. A role mapping to no labels is represented by their absence: an issue in that role carries no state label at all, which is how a board-shaped tracker models a backlog column or a closed-means-rejected convention. Read the mapping before you apply anything; never assume a role's label is its own name.
+A role maps to **zero or more** label strings, not necessarily one. Apply every label its role maps to, and remove the ones belonging to the role it's leaving. A role mapping to no labels is represented by their absence: an issue in that role carries no state label at all, which is how a tracker models a closed-means-rejected convention, or a category whose meaning is carried by the absence of its label. Read the mapping before you apply anything; never assume a role's label is its own name.
 
 State transitions: an unlabeled issue normally goes to `needs-triage` first; from there it moves to `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`. `needs-info` returns to `needs-triage` once the reporter replies. The maintainer can override at any time; flag transitions that look unusual and ask before proceeding.
 
@@ -67,7 +67,9 @@ Query the issue tracker and present three buckets, oldest first:
 2. **`needs-triage`**: evaluation in progress. Where that role maps to no labels, it and the unlabeled bucket are the same bucket; present one.
 3. **`needs-info` with reporter activity since the last triage notes**: needs re-evaluation.
 
-**Subtasks are not triage work.** A **Subtask** is a child of a **Deliverable**, published already-refined by `to-tickets`, and it carries a readiness label but no state or column label. On a mapping where `needs-triage` maps to no labels, that would put every Subtask in the repo in bucket 1. So the untriaged bucket is issues carrying **neither a state label nor a readiness label**, which is a raw report and nothing else. Decide this on the labels alone: no parentage lookup, since that is host-specific and version-specific, and the label rule already excludes every Subtask.
+**Subtasks are not triage work.** A **Subtask** is a child of a **Deliverable**, published already-refined by `to-tickets`, and it carries a readiness label but no state or column label. Left alone, that would put every Subtask in the repo in bucket 1. So bucket 1 is issues carrying **neither a state label nor a readiness label**, which is a raw report and nothing else. Decide this on the labels alone: no parentage lookup, since that is host-specific and version-specific, and the label rule already excludes every Subtask.
+
+**Where `needs-triage` maps to a real label** (a board's `Backlog`), apply it to each bare issue as you surface it in bucket 1. That is the role the issue is already in, and on a board it is what puts the card in the Backlog column instead of nowhere: no board can build a list out of the absence of a label. Say how many you labelled in one line; don't ask per issue.
 
 When PRs are in scope, include external PRs in these buckets and tag each line `[PR]` or `[issue]`. Discovery surfaces only *external* PRs (the tracker config defines who counts as external), so a collaborator's in-flight PR is not triage work. This filter is discovery-only; an explicitly named PR is always triaged regardless of author.
 

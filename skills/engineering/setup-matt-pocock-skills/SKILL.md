@@ -57,7 +57,7 @@ If it is installed, ask exactly one question:
 
 > Do you run a kanban board for this repo? (recommended: **yes**)
 
-- **Yes** → write `docs/agents/triage-labels.md` from the [triage-labels.md](./triage-labels.md) seed. Five board lists (Backlog / TODO / In Progress / Review / On Hold, plus the host's built-in Closed list as Done), column labels on **Deliverables** only, Done carried by the closed state, and `wontfix` labelled so closed-and-shipped stays distinguishable from closed-and-discarded.
+- **Yes** → write `docs/agents/triage-labels.md` from the [triage-labels.md](./triage-labels.md) seed. Five board lists (Backlog / TODO / In Progress / Review / On Hold, plus the host's built-in Closed list as Done), column labels on **Deliverables** only, Done carried by the closed state, `Backlog` carried by a real label because no board can build a list out of the absence of one, and `wontfix` labelled so closed-and-shipped stays distinguishable from closed-and-discarded.
 - **No** → write it from [triage-labels-flat.md](./triage-labels-flat.md): the five canonical roles, each mapping to one label of the same name.
 
 A board answer **includes the in-flight roles** and there is no asking about it: `In Progress` and `Review` are columns, so the roles that move a card into them have to be named. On the flat mapping they stay the optional section they are today, left out unless the user wants `implement` to claim and `land-the-work` to move.

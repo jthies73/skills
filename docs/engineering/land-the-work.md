@@ -24,6 +24,10 @@ Landing the commit needs nothing beyond the repo itself. Pushing and opening the
 
 A commit is not a save point. It is the unit a reviewer reads, and a month later it is the only account of why the change looks the way it does. So the message carries what the diff cannot: the decision behind the change, the constraint that forced an odd-looking choice, and anything the work turned up and deliberately left alone. That last one is the line most often missing, and the most expensive: a finding nobody wrote down is a finding rediscovered from scratch.
 
+The subject line has a hard budget: **50 characters, including the `type:` prefix**. That is the width `git log --oneline` and every host's commit list are built around, so a longer subject is one that gets truncated at exactly the moment someone is scanning for it. The cap is not something a repo can raise, only lower, since a `commitlint` limit sets a maximum and a stricter subject satisfies it either way.
+
+The budget does most of its work as a diagnostic rather than an edit. Detail that will not fit belongs in the body, which has no limit; a subject that still will not fit once the detail has moved is usually one commit doing two things, and the fix is to split it rather than to shorten the words.
+
 The other half of landing is choosing where. The default branch is the default base, and one branch per **Deliverable** is the shape. A Deliverable is one unit of delivery: one issue, one branch, one merge request, several commits. Where it has **Subtasks**, they are slices inside it that [implement](https://aihero.dev/skills-implement) already closed as it finished each one, so this skill references and closes the Deliverable only:
 
 | The work | Base to branch from |
@@ -70,6 +74,7 @@ Conventional Commits is still the default. A messy history is a reason to start 
 
 - You are never on the default branch when the commit lands.
 - The branch name and the subject line are in Conventional Commits shape, unless the repo documents something else.
+- Every subject fits in 50 characters, prefix included, and `git log --oneline` reads as a list rather than a wall of truncations.
 - The commit body tells you something the diff does not, including anything the work found and left for later.
 - Nothing you did not intend to commit is in `git diff --cached --stat`.
 - It reports a branch and a SHA and asks before it pushes or opens anything; the request, when opened, has the feature description and the ticket in it, not a blank body.

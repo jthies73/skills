@@ -14,7 +14,7 @@ Six lists. One card per merge request.
 
 | List        | Label         | Carried by                   |
 | ----------- | ------------- | ---------------------------- |
-| Backlog     | *(none)*      | Deliverable                  |
+| Backlog     | `Backlog`     | Deliverable                  |
 | TODO        | `TODO`        | Deliverable                  |
 | In Progress | `In Progress` | Deliverable                  |
 | Review      | `Review`      | Deliverable                  |
@@ -34,14 +34,20 @@ and that merge *is* the Review to Done transition.
 
 | Canonical role    | Labels on a Deliverable   | Meaning here                                            |
 | ----------------- | ------------------------- | ------------------------------------------------------- |
-| `needs-triage`    | *(none)*                  | The Backlog column: unlabelled means not yet refined     |
+| `needs-triage`    | `Backlog`                 | The Backlog column: filed, not yet refined               |
 | `needs-info`      | `On Hold`                 | Waiting on the reporter, or blocked on anything else     |
 | `ready-for-agent` | `TODO`, `ready-for-agent` | Refined, spec filled, subtasks published, agent may start |
 | `ready-for-human` | `TODO`, `ready-for-human` | Same, but needs judgment, access, or manual testing      |
 | `wontfix`         | `wontfix`, plus closed    | Rejected, as distinct from closed because it shipped      |
 
 `TODO` is the board's ready column, so both ready roles carry it, and the second label says which
-kind of ready. Mapping `needs-triage` to nothing is what keeps a Backlog column unlabelled.
+kind of ready.
+
+`needs-triage` carries a real `Backlog` label, where Done does not, because a label-driven board
+cannot build a list out of the *absence* of a label: unlabelled work renders nowhere. Done gets away
+with it because both hosts give a Closed list for free. Backlog has no such freebie, so the choice
+is a label or no column. What it costs is that a freshly filed issue arrives carrying nothing, which
+is what the discovery rule below has to absorb.
 
 `wontfix` carries a real label because Done is the closed state: without it, closed-and-shipped and
 closed-and-discarded would be indistinguishable, and the Closed list could not be read as Done.
@@ -66,8 +72,8 @@ A **Deliverable** carries a readiness label in full, as part of its ready role a
 **grab gate**: `TODO` + `ready-for-agent` is what tells `implement` an agent may start.
 
 **Every Subtask** carries a bare `ready-for-agent` or `ready-for-human` and **no column label**.
-Not only the exceptions: a Subtask with no labels at all would be indistinguishable from a raw
-Backlog issue in every label-based query, and identifying it instead by parentage means a
+Not only the exceptions: a Subtask with no labels at all would be indistinguishable from a bare,
+never-triaged issue in every label-based query, and identifying it instead by parentage means a
 host-specific, version-specific lookup on every discovery pass. One label per Subtask buys a
 discovery rule that is one line and works everywhere.
 
@@ -81,10 +87,16 @@ A Deliverable that is mostly agent work with one human-only step is therefore
 `ready-for-agent`. `implement` works the subtasks in order, and stops at that one rather than
 guessing.
 
-**Discovery rule.** An issue carrying **no column label and no readiness label** is a raw Backlog
-Deliverable, and that is the only thing the untriaged bucket should contain. A Subtask always carries
-a readiness label, so it never surfaces as triage work; a Deliverable in any column carries a column
-label, so it doesn't either.
+**Discovery rule.** Untriaged work is an issue carrying `Backlog`, **or** carrying no column label
+and no readiness label, and those two are the only things the untriaged bucket should contain. A
+Subtask always carries a readiness label, so it never surfaces as triage work; a Deliverable in any
+other column carries that column's label, so it doesn't either.
+
+The second half of that rule is the price of labelling Backlog: an issue filed through the host's
+UI, by a bot, or by an external reporter arrives bare, and a bare issue is on no board. So `triage`
+applies `Backlog` to a bare issue the first time it surfaces one, which is the role that issue was
+already in. Set the host's issue templates to apply `Backlog` on creation and most issues never take
+that path.
 
 ## Containers
 
@@ -112,11 +124,11 @@ them.
 
 ## Where these labels live
 
-Nine labels: `TODO`, `In Progress`, `Review`, `On Hold`, `ready-for-agent`, `ready-for-human`,
-`wontfix`, `bug`, `epic`.
+Ten labels: `Backlog`, `TODO`, `In Progress`, `Review`, `On Hold`, `ready-for-agent`,
+`ready-for-human`, `wontfix`, `bug`, `epic`.
 
 **On GitLab, a group-level board can only build its lists from group labels.** Project labels are
-invisible to it. So where one board spans many repos in a group, create all nine as **group**
+invisible to it. So where one board spans many repos in a group, create all ten as **group**
 labels, once, and every repo's copy of this file just names them. Creating them per project means
 creating them N times, and they will drift.
 
