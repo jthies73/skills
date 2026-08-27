@@ -1,6 +1,6 @@
 ---
 name: land-the-work
-description: "Land finished work on a branch of its own, commit it as a Conventional Commit, and offer to push and open the merge/pull request. Use when work is finished and sitting uncommitted, when the user asks to branch, commit, or open a PR/MR, or when a skill that built something closes out."
+description: "Land finished work on a branch of its own, commit it as a Conventional Commit, then offer to push and open the merge/pull request. Use when finished work is sitting uncommitted, when the user asks to branch, commit, or open a PR/MR, or when a skill that built something closes out. Not mid-build or mid-review: implement and code-review run first."
 ---
 
 Finished work is not delivered while it sits in a dirty tree. Land it.

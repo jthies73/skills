@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Break a plan, spec, or the current conversation into one Deliverable with ordered Subtasks, published to the configured tracker, and move the Deliverable into the ready role.
+description: Break a plan, spec, or the current conversation into one Deliverable with ordered tracer-bullet Subtasks on the configured tracker, then move the Deliverable into the ready role.
 disable-model-invocation: true
 ---
 

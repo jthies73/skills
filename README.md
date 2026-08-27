@@ -197,7 +197,7 @@ Skills I use daily for code work.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
 - **[setup-matt-pocock-skills](./skills/engineering/setup-matt-pocock-skills/SKILL.md)**: Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)**: Turn the current conversation into a spec and publish it to the issue tracker. No interview, just synthesizes what you've already discussed.
-- **[to-tickets](./skills/engineering/to-tickets/SKILL.md)**: Break any plan, spec, or conversation into one Deliverable with ordered tracer-bullet Subtasks, and move the Deliverable into the ready role.
+- **[to-tickets](./skills/engineering/to-tickets/SKILL.md)**: Break any plan, spec, or conversation into one Deliverable with ordered tracer-bullet Subtasks on the configured tracker, then move the Deliverable into the ready role.
 - **[implement](./skills/engineering/implement/SKILL.md)**: Build the work described by a spec or a Deliverable's Subtasks, driving `/tdd` at pre-agreed seams and closing out with `/code-review`, leaving the commit to `/land-the-work`.
 - **[wayfinder](./skills/engineering/wayfinder/SKILL.md)**: Plan a huge chunk of work, more than one agent session can hold, as a shared map of decision tickets on the issue tracker, and resolve them one at a time until the way to the destination is clear.
 

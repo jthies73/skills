@@ -12,7 +12,7 @@ Reachable only when you type them (Claude Code: `disable-model-invocation: true`
 - **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)**: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
 - **[setup-matt-pocock-skills](./setup-matt-pocock-skills/SKILL.md)**: Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo.
 - **[to-spec](./to-spec/SKILL.md)**: Turn the current conversation into a spec and publish it to the issue tracker.
-- **[to-tickets](./to-tickets/SKILL.md)**: Break any plan, spec, or conversation into one Deliverable with ordered tracer-bullet Subtasks, and move the Deliverable into the ready role.
+- **[to-tickets](./to-tickets/SKILL.md)**: Break any plan, spec, or conversation into one Deliverable with ordered tracer-bullet Subtasks on the configured tracker, then move the Deliverable into the ready role.
 - **[implement](./implement/SKILL.md)**: Build the work described by a spec or a Deliverable's Subtasks, driving `/tdd` at pre-agreed seams and closing out with `/code-review`, leaving the commit to `/land-the-work`.
 - **[wayfinder](./wayfinder/SKILL.md)**: Plan a huge chunk of work (more than one agent session can hold) as a shared map of decision tickets on the issue tracker, resolved one at a time until the way to the destination is clear.
 
