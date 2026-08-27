@@ -2,7 +2,7 @@
 
 `triage` works through the issues on your project's tracker, moving each one through a small state machine of **triage roles** (a category role and a state role) and leaving behind either an agent-ready brief, a specific question for the reporter, or a closed issue with a recorded reason.
 
-It is only for issues **you didn't create**. Raw bug reports, incoming feature requests, an external pull request that arrived unannounced: work that landed in the tracker from outside, in whatever shape the reporter left it. [Tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) that [to-tickets](https://aihero.dev/skills-to-tickets) produced are already agent-ready by construction, and running `triage` over them is wasted work at best. The rule is flat: `/triage` is only for incoming issues, not for issues you created yourself.
+It is only for issues **you didn't create**. Raw bug reports, incoming feature requests, an external pull request that arrived unannounced: work that landed in the tracker from outside, in whatever shape the reporter left it. **Subtasks** that [to-tickets](https://aihero.dev/skills-to-tickets) produced are already refined by construction, and `triage` excludes them from discovery for that reason. The rule is flat: `/triage` is only for incoming issues, not for issues you created yourself.
 
 The second thing that separates it from labelling by hand: it recommends and waits. It tells you its category and state call with reasoning, plus what it found in the codebase, and applies nothing until you direct it.
 
@@ -15,18 +15,20 @@ You invoke this by typing `/triage` and then describing what you want in plain l
 | A tracker full of raw reports from other people | `/triage` |
 | A rough idea of your own, nothing written down | [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
 | A settled conversation to turn into a [spec](https://www.aihero.dev/ai-coding-dictionary/spec) | [to-spec](https://aihero.dev/skills-to-spec) |
-| A spec to split into agent-ready tickets | [to-tickets](https://aihero.dev/skills-to-tickets) |
+| A spec to split into a ready Deliverable with Subtasks | [to-tickets](https://aihero.dev/skills-to-tickets) |
 | A confirmed bug that needs a root cause, not a label | [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) |
 
 ## Prerequisites
 
 `triage` reads and writes your issue tracker, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has to have configured that tracker and its label vocabulary first. The role names below are **canonical**; the label strings in your tracker may differ, and the mapping is what setup provides. If your tracker already uses the canonical names exactly, there is nothing to map and nothing to set up.
 
+A role maps to **zero or more** labels, which is what lets the same five roles drive a kanban board: map both ready roles to a `TODO` column label plus their own name, map `needs-triage` to a `Backlog` column label, and let the host's built-in Closed list carry Done with no label at all. The roles and the skill are unchanged; only the right-hand column of the mapping is.
+
 The tracker config also decides whether external pull requests count as a request surface, and who counts as external. That flag defaults to off and is no longer a setup question, so flip it in `docs/agents/issue-tracker.md` if you want PRs in scope.
 
 ## The state machine
 
-Every triaged item ends up carrying exactly one category role and one state role. Two categories: `bug` (something is broken) and `enhancement` (new feature or improvement). Five states:
+Every triaged item ends up carrying one category role and one state role. Two categories: `bug` (something is broken) and `enhancement` (new feature or improvement). Five states:
 
 | State | Means |
 | --- | --- |
@@ -36,7 +38,7 @@ Every triaged item ends up carrying exactly one category role and one state role
 | `ready-for-human` | The same brief, plus why this can't be delegated: judgment, external access, manual testing. |
 | `wontfix` | Closed, with the reason recorded. |
 
-That is the whole vocabulary, and the "exactly one state role" invariant is what keeps the queries simple. It is also the most-requested area of the [skill](https://www.aihero.dev/ai-coding-dictionary/skill): users have asked for a sixth state for work that is specified but blocked on another issue, for `deferred` work gated on a future trigger, and for a terminal `implemented` state. None of those has shipped. See the questions below.
+That is the whole vocabulary, and the one-state-role invariant is what keeps the queries simple. A role can map to more than one label, or to none at all: on a board `ready-for-agent` is a `TODO` column label plus its own name, and a category can be carried by an absence, so "one role" does not always mean "one label". It is also the most-requested area of the [skill](https://www.aihero.dev/ai-coding-dictionary/skill): users have asked for a sixth state for work that is specified but blocked on another issue, for `deferred` work gated on a future trigger, and for a terminal `implemented` state. None of those has shipped. See the questions below.
 
 `wontfix` splits three ways, and the difference matters because only one of them writes to the knowledge base:
 
@@ -64,8 +66,10 @@ Discovery surfaces only *external* PRs, because a collaborator's in-flight branc
 
 ## Common questions
 
-**I ran `/to-spec` and `/to-tickets`, and now those tickets are sitting there untriaged. Do I run `/triage` over them?**
-No. They are already agent-ready, because `to-tickets` applies the `ready-for-agent` label as it publishes, precisely so an AFK runner picks them up without another pass. The user who hit this had run the spec flow, seen `needs-triage` on the output, and found their AFK runner ignoring everything. `triage` is the on-ramp for work that arrives from outside; the spec flow is the lane for work you originate. They meet at `ready-for-agent`, not before.
+**I ran `/to-spec` and `/to-tickets`, and now those Subtasks are sitting there untriaged. Do I run `/triage` over them?**
+No, and `triage` won't offer to. They are already refined: `to-tickets` labels every Subtask with a readiness label as it publishes, and moves the **Deliverable** into the ready role as its final step, precisely so an AFK runner picks it up without another pass. The user who hit this had run the spec flow, seen `needs-triage` on the output, and found their AFK runner ignoring everything.
+
+The discovery rule that keeps this straight is worth knowing, because it is what makes a board-shaped mapping usable: the untriaged bucket is issues carrying **neither a state label nor a readiness label**. A Subtask always carries a readiness label and never a column label, so it is out; a Deliverable in any column carries a column label, so it is out too. What's left is raw reports, which is exactly what `triage` is for.
 
 **Is `triage` still relevant now that there's a `to-spec` → `to-tickets` → `implement` flow?**
 Only if you have inbound work. `triage` predates that spine and does a different job: it is the lane for reports other people filed. If everything in your tracker came out of your own planning, you will rarely open it. If you maintain anything public, or your team files bugs at you, it is the front door. The main use is open-source repos taking issues from external contributors.
@@ -87,7 +91,7 @@ Yes, the tracker is config, not a hard-coded assumption, and people run it again
 
 ## It's working if
 
-- Every item it touches ends with exactly one category role and one state role, never zero, never two states in conflict.
+- Every item it touches ends with one category role and one state role, never two states in conflict.
 - It gives you a recommendation with reasoning and stops, rather than relabelling and moving on.
 - The bug got reproduced, or the PR got checked out and run, before anything reached `ready-for-agent`.
 - The briefs it writes name types and behaviours, and contain no file paths and no line numbers.
@@ -96,4 +100,6 @@ Yes, the tracker is config, not a hard-coded assumption, and people run it again
 
 ## Where it fits
 
-`triage` is an **on-ramp**, not a step in the main chain. The main flow runs from an idea you had (grill, spec, tickets, implement, review), and `triage` is the parallel lane for work that arrived instead. It merges at the same place: an issue labelled `ready-for-agent` with a brief on it, which [implement](https://aihero.dev/skills-implement) picks up exactly as it would a ticket from [to-tickets](https://aihero.dev/skills-to-tickets). When a request needs sharpening before it can be briefed, `triage` runs [grilling](https://aihero.dev/skills-grilling) and [domain-modeling](https://aihero.dev/skills-domain-modeling) together, a round of questions at a time, so decisions land in `CONTEXT.md` and the ADRs as they're made. When you're not sure which lane you are in, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+`triage` is an **on-ramp**, not a step in the main chain. The main flow runs from an idea you had (grill, spec, tickets, implement, review), and `triage` is the parallel lane for work that arrived instead. It merges at the same place: an issue in the `ready-for-agent` role with a brief on it, which [implement](https://aihero.dev/skills-implement) picks up exactly as it would a Deliverable from [to-tickets](https://aihero.dev/skills-to-tickets).
+
+On a board that gives you two doors into the ready column, and they divide cleanly by size. `to-tickets` is the door for work that needs a spec and Subtasks. `triage` is the door for work small enough that the agent brief is the whole spec, via a direct state override. When a request needs sharpening before it can be briefed, `triage` runs [grilling](https://aihero.dev/skills-grilling) and [domain-modeling](https://aihero.dev/skills-domain-modeling) together, a round of questions at a time, so decisions land in `CONTEXT.md` and the ADRs as they're made. When you're not sure which lane you are in, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
