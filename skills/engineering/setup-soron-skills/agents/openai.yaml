@@ -1,0 +1,5 @@
+interface:
+  display_name: "Setup Soron Skills"
+  short_description: "Configure a repo for Soron's workflow"
+policy:
+  allow_implicit_invocation: false

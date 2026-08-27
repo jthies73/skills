@@ -11,6 +11,7 @@ Reachable only when you type them (Claude Code: `disable-model-invocation: true`
 - **[triage](./triage/SKILL.md)**: Move issues through a state machine of triage roles.
 - **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)**: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
 - **[setup-matt-pocock-skills](./setup-matt-pocock-skills/SKILL.md)**: Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo.
+- **[setup-soron-skills](./setup-soron-skills/SKILL.md)**: Configure this repo for Soron's workflow (GitLab, the DEV group's kanban board, single-context docs), with the org-wide answers already given. Ships [WORKFLOW.md](./setup-soron-skills/WORKFLOW.md), the guide to working the board.
 - **[to-spec](./to-spec/SKILL.md)**: Turn the current conversation into a spec and publish it to the issue tracker.
 - **[to-tickets](./to-tickets/SKILL.md)**: Break any plan, spec, or conversation into one Deliverable with ordered tracer-bullet Subtasks on the configured tracker, then move the Deliverable into the ready role.
 - **[implement](./implement/SKILL.md)**: Build the work described by a spec or a Deliverable's Subtasks, driving `/tdd` at pre-agreed seams and closing out with `/code-review`, leaving the commit to `/land-the-work`.
