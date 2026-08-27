@@ -101,10 +101,10 @@ The path most work travels. `/ask-matt` is the full router; this is the spine of
    Deliverable to TODO. That is what earns the ready column: a filled spec **and** published
    Subtasks.
 4. **`/implement`**, once per Subtask, each in a fresh context window. It claims the Deliverable on
-   its first run, drives `/tdd` internally, closes each Subtask as it finishes, and closes out with
-   `/code-review`. It stops at the commit.
-5. **`/land-the-work`** branches, writes a Conventional Commit, and asks before publishing. Say yes
-   and it opens the merge request and moves the card to Review.
+   its first run, takes its branch in a worktree of its own, drives `/tdd` internally, closes each
+   Subtask as it finishes, and closes out with `/code-review`. It stops short of the commit.
+5. **`/land-the-work`**, run in that worktree, writes a Conventional Commit and asks before
+   publishing. Say yes and it opens the merge request and moves the card to Review.
 6. **You merge.** The card closes and lands in Done.
 
 Steps 1 to 3 belong in **one unbroken context window**: do not clear or compact until after
