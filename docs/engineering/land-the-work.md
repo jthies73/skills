@@ -1,6 +1,8 @@
 ## What it does
 
-`land-the-work` takes work that is finished but uncommitted, puts it on a branch of its own, and commits it as a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/). It then offers to push the branch and open the merge or pull request, and only does either after you say yes.
+`land-the-work` takes work that is finished but uncommitted, gets it onto a branch of its own, and commits it as a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/). It then offers to push the branch and open the merge or pull request, and only does either after you say yes.
+
+Work that came through [implement](https://aihero.dev/skills-implement) is already on its branch, in the worktree that skill built it in, so the branch half of the job is usually confirming rather than creating. Run this **in that worktree**: an uncommitted diff belongs to one working tree and is invisible from every other checkout of the repo. Work that never came through `implement`, sitting dirty on your default branch, still gets branched here.
 
 Conventional Commits is the fixed default for both the subject line and the branch name, not something inferred from the repo's own history: a `type/slug` branch and a `type: summary` subject apply even in a repo whose past commits don't already look that way, since that history is exactly the debt the convention fixes going forward. A documented override in `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, or a commitlint config still wins where one exists.
 
@@ -28,10 +30,13 @@ The subject line has a hard budget: **50 characters, including the `type:` prefi
 
 The budget does most of its work as a diagnostic rather than an edit. Detail that will not fit belongs in the body, which has no limit; a subject that still will not fit once the detail has moved is usually one commit doing two things, and the fix is to split it rather than to shorten the words.
 
-The other half of landing is choosing where. The default branch is the default base, and one branch per **Deliverable** is the shape. A Deliverable is one unit of delivery: one issue, one branch, one merge request, several commits. Where it has **Subtasks**, they are slices inside it that [implement](https://aihero.dev/skills-implement) already closed as it finished each one, so this skill references and closes the Deliverable only:
+The other half of landing is where. One branch per **Deliverable** is the shape: one issue, one branch, one merge request, several commits. Where it has **Subtasks**, they are slices inside it that [implement](https://aihero.dev/skills-implement) already closed as it finished each one, so this skill references and closes the Deliverable only.
+
+Where the branch has to be created here, the base is a choice:
 
 | The work | Base to branch from |
 | --- | --- |
+| Already on a branch, from `implement` or from you | None. Confirm and commit |
 | Independent of anything unmerged | The default branch, fetched and up to date |
 | Builds on commits that only exist on a feature branch | That feature branch |
 | Genuinely could go either way | Ask before branching |
@@ -56,7 +61,11 @@ No. It reports the branch and SHA first and asks before doing either, because pu
 
 **Does `implement` not commit its own work?**
 
-No. It builds the work and closes out with [code-review](https://aihero.dev/skills-code-review), then stops, which leaves finished work sitting in a dirty tree on whatever branch you happened to be on. This skill is that missing step, and being model-invoked is what lets it fire there without being asked.
+No. It builds the work and closes out with [code-review](https://aihero.dev/skills-code-review), then stops, which leaves finished work sitting in a dirty tree, on the branch and in the worktree it created for the Deliverable. This skill is that missing step, and being model-invoked is what lets it fire there without being asked. What changed is the division of labour: `implement` owns the branch now, this skill owns the commit.
+
+**I ran it and it found nothing to land.**
+
+Almost always the wrong directory. `implement` builds in a worktree of its own next to your repo, and an uncommitted diff belongs to that working tree alone, so the checkout you started from looks clean because it is clean. `git worktree list` shows where the work is; run the skill there. The same goes for reading the diff yourself: `git -C <path> diff`.
 
 **The work came from five Subtasks. Should the request reference all five?**
 
@@ -73,6 +82,7 @@ Conventional Commits is still the default. A messy history is a reason to start 
 ## It's working if
 
 - You are never on the default branch when the commit lands.
+- Work from `implement` gets committed on the branch that already existed, in the worktree holding it, with no second branch created.
 - The branch name and the subject line are in Conventional Commits shape, unless the repo documents something else.
 - Every subject fits in 50 characters, prefix included, and `git log --oneline` reads as a list rather than a wall of truncations.
 - The commit body tells you something the diff does not, including anything the work found and left for later.

@@ -1,0 +1,5 @@
+---
+"mattpocock-skills": patch
+---
+
+Move branch creation from `land-the-work` into `implement`, and give every Deliverable a git worktree of its own. `implement` now takes the branch (`type/slug` in Conventional Commits shape, from the default branch unless the work builds on commits living only on a feature branch) before it builds, creates `../<repo>-<slug>` to hold it, installs dependencies there, and works in that directory for the rest of the run, reattaching rather than re-branching when a later Subtask arrives in a fresh context window. That is what makes sibling Deliverables genuinely runnable at the same time, an agent each, with no shared HEAD and no shared index; `refs/stash` is still shared, so `git stash` stays off limits. `land-the-work` keeps the commit and the merge request and no longer branches by default: it confirms the branch `implement` made, runs in that worktree, and creates a branch only for work that never came through `implement`. Because the diff stays uncommitted, it is visible only inside the worktree, so `implement` reports the path and the `git -C <path> diff` that reads it.
