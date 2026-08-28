@@ -1,5 +1,0 @@
----
-"mattpocock-skills": patch
----
-
-Add the `land-the-work` skill (engineering bucket, model-invoked). It lands finished work: picks a base (the default branch, or a feature branch when the work builds on commits that only exist there), branches and commits in Conventional Commits shape (a documented override in `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, or a commitlint config still wins), staging only the work. It then reports the branch and SHA and asks whether to push and open the merge/pull request, and on yes does both itself, filling the repo's own PR/MR template where one exists and otherwise writing a description with the feature description and the ticket it's for. Where the work finishes an issue outright, that reference is a closing keyword, so merging the request closes the issue instead of leaving it linked and open; where the work only does part of the job, it references the issue without one and notes what is still outstanding. This is the step `implement` deliberately leaves out, and being model-invoked lets it fire there without being asked.
