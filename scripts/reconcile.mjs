@@ -26,6 +26,10 @@ export const LABEL_MAPPING = {
  * @param {typeof LABEL_MAPPING} mapping
  * @returns {{ add: string[], remove: string[], report: string[] }}
  */
+function labelsIn(labels, set) {
+  return labels.filter((label) => set.has(label));
+}
+
 export function reconcile(issue, mapping = LABEL_MAPPING) {
   const { state, labels, closedByMerge } = issue;
   const workflowLabels = new Set([...mapping.columns, ...mapping.readiness]);
@@ -36,9 +40,7 @@ export function reconcile(issue, mapping = LABEL_MAPPING) {
   const report = [];
 
   if (state === "closed") {
-    for (const label of labels) {
-      if (workflowLabels.has(label)) remove.push(label);
-    }
+    remove.push(...labelsIn(labels, workflowLabels));
 
     const hasTerminal = labels.some((label) => terminalLabels.has(label));
     if (!hasTerminal) {
@@ -52,9 +54,7 @@ export function reconcile(issue, mapping = LABEL_MAPPING) {
       }
     }
   } else {
-    for (const label of labels) {
-      if (terminalLabels.has(label)) remove.push(label);
-    }
+    remove.push(...labelsIn(labels, terminalLabels));
 
     const columnsPresent = mapping.columns.filter((column) => labels.includes(column));
     if (columnsPresent.length > 1) {
