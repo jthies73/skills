@@ -24,7 +24,10 @@ _Avoid_: ticket, slice used as a noun
 A `wayfinder` unit: a child **Issue** of a `wayfinder:map` holding a *question* whose resolution is a decision, not a slice of a build to execute. The **decision** qualifier is what keeps it distinct from an implementation ticket; `wayfinder` introduces the term, then uses "ticket".
 
 **Triage role**:
-A canonical state-machine role an **Issue** occupies during triage (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). Each role maps to **zero or more** real label strings in the **Issue tracker** via this repo's `.agents/triage-labels.md` (other repos use `docs/agents/triage-labels.md`). A role mapping to none is carried by the absence of a label, which is how a rejected-means-closed convention and the `enhancement` category are expressed.
+A canonical state-machine role an **Issue** occupies during triage (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). Each role maps to **zero or more** real label strings in the **Issue tracker** via this repo's `.agents/triage-labels.md` (other repos use `docs/agents/triage-labels.md`). A role mapping to none is carried by the absence of a label, which is how the `enhancement` category is expressed.
+
+**Terminal label**:
+One of the two labels, `Done` or `wontfix`, that a closed **Issue** carries; an open Issue carries neither, and the two are mutually exclusive. A scheduled reconciliation sweep enforces the invariant, since a human closing an Issue by hand or a merge closing it via a keyword both leave the label to be derived rather than chosen. See [ADR-0004](.agents/adr/0004-terminal-labels-on-close.md), which reverses the earlier "Done is the closed state, not a label" convention: `Done` is now a **Triage role** label like any other, not an inference from the host's Closed list.
 
 **In-flight role**:
 An optional **Triage role** for work already moving, `in-progress` or `in-review`, named in the same mapping. Naming one is what licenses a skill to move an **Issue**: `implement` claims into `in-progress`, `land-the-work` moves to `in-review`. Where the mapping omits them, neither skill touches the tracker. A board-shaped mapping cannot omit them, since In Progress and Review are columns.
