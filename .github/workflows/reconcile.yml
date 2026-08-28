@@ -3,16 +3,21 @@ name: Reconcile terminal labels
 on:
   schedule:
     - cron: "*/15 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report what would change without writing anything"
+        type: boolean
+        default: false
 
 concurrency: ${{ github.workflow }}
 
 jobs:
   reconcile:
-    name: Dry run
+    name: Reconcile
     runs-on: ubuntu-latest
     permissions:
-      issues: read
+      issues: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,7 +27,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Reconcile (dry run)
-        run: node scripts/gh-reconcile.mjs
+      - name: Reconcile
+        run: node scripts/gh-reconcile.mjs ${{ inputs.dry_run && ' ' || '--apply' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

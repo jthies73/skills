@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 // GitHub adapter over the reconcile seam (ADR-0004). Fetches every Issue via
-// GraphQL, normalizes it, calls reconcile, and reports what it would do.
-// Dry run only: this script never writes to the tracker. Holds no rules of
-// its own; every rule lives in reconcile.mjs.
+// GraphQL, normalizes it, calls reconcile, and either prints what it would
+// do (default) or applies it (--apply). Holds no rules of its own; every
+// rule lives in reconcile.mjs.
 
 import { execFileSync } from "node:child_process";
+import { appendFileSync } from "node:fs";
 import { reconcile, LABEL_MAPPING } from "./reconcile.mjs";
 
 const [owner, repo] = (process.env.GITHUB_REPOSITORY ?? "jthies73/skills").split("/");
+const applyMode = process.argv.includes("--apply");
 
 const ISSUES_QUERY = `
 query($owner: String!, $repo: String!, $after: String) {
@@ -63,12 +65,28 @@ function fetchAllIssues() {
   return issues;
 }
 
-function describe({ add, remove, report }) {
+function describe({ add, remove }) {
   const parts = [];
   if (add.length) parts.push(`add ${add.join(", ")}`);
   if (remove.length) parts.push(`remove ${remove.join(", ")}`);
-  if (report.length) parts.push(`report ${report.join(", ")}`);
   return parts.join("; ");
+}
+
+function applyChange(issue, { add, remove }) {
+  const args = ["issue", "edit", String(issue.number), "--repo", `${owner}/${repo}`];
+  for (const label of add) args.push("--add-label", label);
+  for (const label of remove) args.push("--remove-label", label);
+  execFileSync("gh", args, { encoding: "utf8" });
+}
+
+// One collected summary per run, not a comment per Issue: a stale tracker
+// with a long backlog of ambiguous closes should not generate a
+// notification storm. Written to the job summary when running in Actions,
+// and to stdout either way.
+function writeSummary(lines) {
+  console.log(lines.join("\n"));
+  const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+  if (summaryPath) appendFileSync(summaryPath, lines.join("\n") + "\n");
 }
 
 function main() {
@@ -82,26 +100,30 @@ function main() {
     for (const reason of ops.report) reported.push({ issue, reason });
   }
 
-  console.log(`Scanned ${issues.length} issues on ${owner}/${repo}.`);
+  const lines = [`Scanned ${issues.length} issues on ${owner}/${repo} (${applyMode ? "apply" : "dry run"}).`];
 
   if (changes.length === 0 && reported.length === 0) {
-    console.log("Already satisfies the terminal-label invariant. No operations.");
+    lines.push("Already satisfies the terminal-label invariant. No operations.");
+    writeSummary(lines);
     return;
   }
 
   if (changes.length > 0) {
-    console.log(`\n${changes.length} issue(s) would change:`);
+    lines.push("", `${changes.length} issue(s) ${applyMode ? "changed" : "would change"}:`);
     for (const { issue, ops } of changes) {
-      console.log(`  #${issue.number} ${issue.title}: ${describe(ops)}`);
+      if (applyMode) applyChange(issue, ops);
+      lines.push(`  #${issue.number} ${issue.title}: ${describe(ops)}`);
     }
   }
 
   if (reported.length > 0) {
-    console.log(`\n${reported.length} issue(s) can't be classified, and would only be reported:`);
+    lines.push("", `${reported.length} issue(s) can't be classified, and are only reported:`);
     for (const { issue, reason } of reported) {
-      console.log(`  #${issue.number} ${issue.title}: ${reason}`);
+      lines.push(`  #${issue.number} ${issue.title}: ${reason}`);
     }
   }
+
+  writeSummary(lines);
 }
 
 main();
