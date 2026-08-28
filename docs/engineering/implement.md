@@ -70,7 +70,7 @@ The word "pre-agreed" is doing real work, and it is also the skill's weakest joi
 
 **It finished, but my Deliverable is still open and the acceptance criteria are still unchecked.**
 
-The Deliverable is meant to still be open. `implement` closes each **Subtask** as it finishes it, because the Deliverable's child list is the only readable progress signal while work is in flight and closing a parent closes no children on any host. The Deliverable itself closes on merge, from the closing keyword [land-the-work](https://aihero.dev/skills-land-the-work) writes.
+The Deliverable is meant to still be open. `implement` closes each **Subtask** as it finishes it, applying `Done` as it does, because the Deliverable's child list is the only readable progress signal while work is in flight and closing a parent closes no children on any host. The Deliverable itself closes on merge, from the closing keyword [land-the-work](https://aihero.dev/skills-land-the-work) writes.
 
 What it still does not do is tick the `- [ ]` boxes in an issue body, or act on the findings `code-review` produced. Reconcile those yourself.
 
@@ -109,7 +109,7 @@ Probably the Subtask is too big rather than the skill being misused. A run does 
 - A second session on the same Deliverable reattaches to that worktree instead of creating a second branch.
 - You can see an actual `/tdd` invocation in the trace, not just tests appearing in the diff.
 - Typechecks and single test files run repeatedly during the run, and the full suite runs once near the end.
-- The Subtask closes when it is done, so the Deliverable's child list reads as a progress bar.
+- The Subtask closes with `Done` applied when it is done, so the Deliverable's child list reads as a progress bar.
 - The run reaches `code-review` without you prompting it to carry on, then stops there, reporting the worktree path and leaving the diff uncommitted inside it.
 - The diff is one Subtask's worth of change: a vertical slice through every layer, not several swept together.
 

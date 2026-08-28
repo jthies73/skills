@@ -90,10 +90,10 @@ Show counts and a one-line summary per item. Let the maintainer pick.
    - `ready-for-agent`: post an agent brief comment ([AGENT-BRIEF.md](AGENT-BRIEF.md)).
    - `ready-for-human`: same structure as an agent brief, but note why it can't be delegated (judgment calls, external access, design decisions, manual testing).
    - `needs-info`: post triage notes (template below).
-   - For `wontfix`, close the issue, with the comment depending on *why*:
-     - **Already implemented**: the change already exists in the codebase. Point to where it lives; do **not** write to `.out-of-scope/` (that KB is for *rejected* requests, not built ones).
-     - **Rejected (bug)**: give a polite explanation, then close.
-     - **Rejected (enhancement)**: write to `.out-of-scope/`, link to it from a comment, then close ([OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)).
+   - For `wontfix`, apply the `wontfix` label, then close, with the comment depending on *why*:
+     - **Already implemented**: the change already exists in the codebase. Apply `wontfix`, point to where it lives, then close; do **not** write to `.out-of-scope/` (that KB is for *rejected* requests, not built ones).
+     - **Rejected (bug)**: apply `wontfix`, give a polite explanation, then close.
+     - **Rejected (enhancement)**: apply `wontfix`, write to `.out-of-scope/`, link to it from a comment, then close ([OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)).
    - `needs-triage`: apply the role. Optional comment if there's partial progress.
 
 ## Quick state override

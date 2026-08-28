@@ -1,0 +1,33 @@
+name: Reconcile terminal labels
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report what would change without writing anything"
+        type: boolean
+        default: false
+
+concurrency: ${{ github.workflow }}
+
+jobs:
+  reconcile:
+    name: Reconcile
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Reconcile
+        run: node scripts/gh-reconcile.mjs ${{ inputs.dry_run && ' ' || '--apply' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

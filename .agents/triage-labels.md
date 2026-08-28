@@ -7,30 +7,34 @@ mapping to none is represented by the absence of any state label.
 This repo runs off a board (GitHub Issues on `jthies73/skills`). Its shape comes entirely from the
 right-hand columns: the skills are unchanged, they just read this mapping.
 
-**Verified against the tracker on 2026-08-27.** The `wontfix` and `epic` labels are named by this
-mapping and still need creating; the rest exist.
+**Verified against the tracker on 2026-08-28.** All eleven labels this mapping names exist.
 
 ## The board
 
 Six lists. One card per merge request.
 
 | List        | Label         | Carried by                   |
-| ----------- | ------------- | ---------------------------- |
+| ----------- | ------------- | ----------------------------- |
 | Backlog     | `Backlog`     | Deliverable                  |
 | TODO        | `TODO`        | Deliverable                  |
 | In Progress | `In Progress` | Deliverable                  |
 | Review      | `Review`      | Deliverable                  |
 | On Hold     | `On Hold`     | Deliverable                  |
-| Done        | *(closed)*    | Deliverable, closed by merge |
+| Done        | `Done`, plus closed | Deliverable, closed by merge |
 
 **Column labels are exclusive, and live on Deliverables only.** A **Subtask** never carries one,
 which is the whole mechanism keeping subtasks off the board. It needs no work-item support, so it
 behaves identically on GitHub and on any GitLab version.
 
-**Done is the closed state, not a label.** Both hosts give a Closed list for free, so a `Done` label
-would buy a column that already exists plus a ritual to keep it honest. This is why the tracker
-config sets **merging closes the referenced issue** to `yes`: the human reviews the diff and merges,
-and that merge *is* the Review to Done transition.
+**The terminal-label invariant.** An open Issue carries no terminal label. A closed Issue carries
+exactly one **terminal label**, `Done` or `wontfix`, and no workflow label (no column label, and no
+readiness label on a Subtask). The two terminal labels are mutually exclusive. This reverses the
+earlier "Done is the closed state, not a label" convention, recorded in
+[ADR-0004](adr/0004-terminal-labels-on-close.md): closing a card no longer implies `Done` by the
+absence of `wontfix`, it requires the label. A scheduled reconciliation sweep applies what it can
+derive (stripping workflow labels from a closed Issue, adding `Done` where a merge closed it) and
+reports what it can't (a closed Issue with neither terminal label, or an open Issue with a merged
+closing request behind it) rather than guessing.
 
 ## State roles
 
@@ -40,20 +44,20 @@ and that merge *is* the Review to Done transition.
 | `needs-info`      | `On Hold`                 | Waiting on the reporter, or blocked on anything else     |
 | `ready-for-agent` | `TODO`, `ready-for-agent` | Refined, spec filled, subtasks published, agent may start |
 | `ready-for-human` | `TODO`, `ready-for-human` | Same, but needs judgment, access, or manual testing      |
-| `wontfix`         | `wontfix`, plus closed    | Rejected, as distinct from closed because it shipped      |
+| `done`            | `Done`, plus closed       | Shipped: the merge that closed it is the Review to Done move |
+| `wontfix`         | `wontfix`, plus closed    | Rejected, as distinct from `done` because it shipped nothing |
 
 `TODO` is the board's ready column, so both ready roles carry it, and the second label says which
 kind of ready.
 
-`needs-triage` carries a real `Backlog` label, where Done does not, because a label-driven board
-cannot build a list out of the *absence* of a label: unlabelled work renders nowhere. Done gets away
-with it because both hosts give a Closed list for free. Backlog has no such freebie, so the choice
-is a label or no column. What it costs is that a freshly filed issue arrives carrying nothing, which
-is what the discovery rule below has to absorb.
+`needs-triage` carries a real `Backlog` label, because a label-driven board cannot build a list out
+of the *absence* of a label: unlabelled work renders nowhere. What it costs is that a freshly filed
+issue arrives carrying nothing, which is what the discovery rule below has to absorb.
 
-`wontfix` carries a real label because Done is the closed state: without it, closed-and-shipped and
-closed-and-discarded would be indistinguishable, and the Closed list could not be read as Done.
-With it, everything closed that is not `wontfix` is done.
+`done` and `wontfix` both carry real labels for the same reason: a label-driven board (and any
+skill or query reading the tracker) cannot tell closed-and-shipped from closed-and-rejected out of
+an absence either. The reconciliation sweep is what keeps `Done` honest without a human ritual: see
+the terminal-label invariant above.
 
 ## In-flight roles
 
@@ -126,12 +130,12 @@ them.
 
 ## Where these labels live
 
-Ten labels: `Backlog`, `TODO`, `In Progress`, `Review`, `On Hold`, `ready-for-agent`,
-`ready-for-human`, `wontfix`, `bug`, `epic`.
+Eleven labels: `Backlog`, `TODO`, `In Progress`, `Review`, `On Hold`, `ready-for-agent`,
+`ready-for-human`, `Done`, `wontfix`, `bug`, `epic`.
 
-All ten are **repository** labels here: GitHub has no organisation-level labels, so a single repo's
-board reads them directly. On GitLab a group-level board can only build its lists from **group**
-labels, which is where a board spanning many repos in a group would put them.
+All eleven are **repository** labels here: GitHub has no organisation-level labels, so a single
+repo's board reads them directly. On GitLab a group-level board can only build its lists from
+**group** labels, which is where a board spanning many repos in a group would put them.
 
 Keep the right-hand columns honest: a table asserting labels nobody created is worse than no table,
 because every skill reads it as fact.

@@ -36,7 +36,7 @@ Use /tdd where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.
 
-**Close each Subtask as you finish it**, where the tracker holds them as real issues. Closing a Deliverable does not close its children on any host, and the Deliverable's child list is the only readable progress signal a human has while the work is in flight.
+**Close each Subtask as you finish it**, where the tracker holds them as real issues, applying `Done` as you close it so the tracker never reads it as an unclassified close. Closing a Deliverable does not close its children on any host, and the Deliverable's child list is the only readable progress signal a human has while the work is in flight.
 
 **Stop at a Subtask that needs a human.** Where a Subtask carries the `ready-for-human` readiness label, or turns out to need a credential, a dashboard, or a judgment call you can't make, don't guess and don't skip ahead. Comment on it saying what's needed, and recommend `/wizard`, which exists for exactly the steps only a person can take. Leave the Deliverable in the in-progress role: the branch exists and you hold it, so it is in progress. Move it to `needs-info` only where the block is genuinely external.
 
