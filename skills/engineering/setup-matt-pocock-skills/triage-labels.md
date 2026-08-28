@@ -61,7 +61,7 @@ them have to be named.
 | Role          | Labels on a Deliverable | Set by                                     |
 | ------------- | ----------------------- | ------------------------------------------ |
 | `in-progress` | `In Progress`           | `implement`, when it claims the Deliverable |
-| `in-review`   | `Review`                | `land-the-work`, when the request opens     |
+| `in-review`   | `Review`                | `land-the-work`, when the request leaves draft |
 
 Nothing moves a card out of `Review`. The human reviews the diff and merges, and the closing
 keyword in the request description does the rest.

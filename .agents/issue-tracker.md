@@ -48,8 +48,8 @@ Project, whose lists can be built from its own Status field or from these labels
 
 **Default reviewer:** none. Passed to `gh pr create --reviewer` when set.
 
-**Merging closes the referenced issue:** yes. A Deliverable moves to `Review` when the request opens,
-and the merge is what moves it to Done, so `land-the-work` writes `Closes` on a Deliverable it
+**Merging closes the referenced issue:** yes. A Deliverable moves to `Review` when the request leaves
+draft, and the merge is what moves it to Done, so `land-the-work` writes `Closes` on a Deliverable it
 finishes outright.
 
 ## Pull requests as a triage surface
