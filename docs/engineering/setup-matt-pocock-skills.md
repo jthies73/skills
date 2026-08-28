@@ -37,7 +37,7 @@ It leads each section with the recommended answer, and skips whatever exploratio
 
 The label question is a single yes-or-no: **do you run a kanban board for this repo?** Say yes and you get the board mapping, where the column labels sit on **Deliverables** only and a **Subtask** carries a readiness label and no column label, which is what keeps it off the board. Say no and you get the flat mapping: five roles, one label each, named after the role.
 
-Answering yes also decides something the flat mapping leaves optional. On a board, `In Progress` and `Review` are columns, so the **in-flight roles** come with it, which is what licenses [implement](https://aihero.dev/skills-implement) to claim a card and [land-the-work](https://aihero.dev/skills-land-the-work) to move it when the request opens. On the flat mapping those roles stay opt-in, and without them neither skill touches your tracker at all.
+Answering yes also decides something the flat mapping leaves optional. On a board, `In Progress` and `Review` are columns, so the **in-flight roles** come with it, which is what licenses [implement](https://aihero.dev/skills-implement) to claim a card and [land-the-work](https://aihero.dev/skills-land-the-work) to move it when the request leaves draft. On the flat mapping those roles stay opt-in, and without them neither skill touches your tracker at all.
 
 No skill knows which answer you gave. A board is a right-hand column in one markdown file.
 

@@ -63,7 +63,11 @@ them have to be named.
 | Role          | Labels on a Deliverable | Set by                                     |
 | ------------- | ----------------------- | ------------------------------------------ |
 | `in-progress` | `In Progress`           | `implement`, when it claims the Deliverable |
-| `in-review`   | `Review`                | `land-the-work`, when the request opens     |
+| `in-review`   | `Review`                | `land-the-work`, when the request leaves draft |
+
+A card reaches `Review` when the request leaves draft, not when it opens: `land-the-work` opens a
+draft on the first Subtask and marks it ready on the last, and a card sitting in Review while three
+Subtasks are still being built is a board that lies.
 
 Nothing moves a card out of `Review`. The human reviews the diff and merges, and the closing
 keyword in the request description does the rest.

@@ -23,9 +23,9 @@ Edit the right-hand column to match whatever vocabulary you actually use. A role
 
 ## In-flight roles (optional)
 
-Add this section to have `implement` claim tickets and `land-the-work` move them on publish. Leave it out, the default, and neither skill touches the tracker.
+Add this section to have `implement` claim tickets and `land-the-work` move them when the request leaves draft. Leave it out, the default, and neither skill touches the tracker.
 
 | Role          | Labels in our tracker | Set by                       |
 | ------------- | ---------------------- | ----------------------------- |
 | `in-progress` | `in-progress`          | `implement`, when it claims   |
-| `in-review`   | `in-review`            | `land-the-work`, on publish   |
+| `in-review`   | `in-review`            | `land-the-work`, when the request leaves draft |
