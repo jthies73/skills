@@ -1,0 +1,28 @@
+name: Reconcile terminal labels
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+
+concurrency: ${{ github.workflow }}
+
+jobs:
+  reconcile:
+    name: Dry run
+    runs-on: ubuntu-latest
+    permissions:
+      issues: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Reconcile (dry run)
+        run: node scripts/gh-reconcile.mjs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

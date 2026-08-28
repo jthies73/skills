@@ -63,6 +63,11 @@ test("a Subtask reopened with no column label is left off the board", () => {
   assert.deepEqual(result, { add: [], remove: [], report: [] });
 });
 
+test("an open container (epic) with no column label is left off the board", () => {
+  const result = reconcile({ state: "open", labels: ["epic"], closedByMerge: false });
+  assert.deepEqual(result, { add: [], remove: [], report: [] });
+});
+
 test("an open issue with a merged closing request behind it is reported as the reverse defect", () => {
   const result = reconcile({ state: "open", labels: ["Review"], closedByMerge: true });
   assert.deepEqual(result, { add: [], remove: [], report: ["open-with-merged-close"] });
@@ -89,7 +94,7 @@ test("idempotence holds for a reopened issue too", () => {
 });
 
 test("uses the exported LABEL_MAPPING by default", () => {
-  assert.deepEqual(Object.keys(LABEL_MAPPING).sort(), ["columns", "readiness", "terminal"]);
+  assert.deepEqual(Object.keys(LABEL_MAPPING).sort(), ["columns", "containers", "readiness", "terminal"]);
   assert.equal(LABEL_MAPPING.terminal.done, "Done");
   assert.equal(LABEL_MAPPING.terminal.wontfix, "wontfix");
 });

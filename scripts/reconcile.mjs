@@ -14,6 +14,10 @@ export const LABEL_MAPPING = {
   // Carried by a Deliverable alongside a column label, or alone on a
   // Subtask. Counted as a workflow label either way: stripped on close.
   readiness: ["ready-for-agent", "ready-for-human"],
+  // A container (e.g. `epic`) deliberately leaves the board: it never
+  // carries a column label, open or closed, and the invariant must not
+  // restore one to it on the strength of that absence alone.
+  containers: ["epic"],
   terminal: { done: "Done", wontfix: "wontfix" },
 };
 
@@ -59,11 +63,13 @@ export function reconcile(issue, mapping = LABEL_MAPPING) {
         if (column !== keep) remove.push(column);
       }
     } else if (columnsPresent.length === 0) {
-      // A Subtask carries a readiness label and no column label by design
-      // (that's what keeps it off the board): only a bare Deliverable gets
-      // Backlog restored.
-      const isSubtask = mapping.readiness.some((label) => labels.includes(label));
-      if (!isSubtask) add.push(mapping.columns[0]);
+      // A Subtask (readiness label) or a container (e.g. `epic`) carries no
+      // column label by design, which is what keeps each off the board:
+      // only a bare Deliverable gets Backlog restored.
+      const offBoard =
+        mapping.readiness.some((label) => labels.includes(label)) ||
+        (mapping.containers ?? []).some((label) => labels.includes(label));
+      if (!offBoard) add.push(mapping.columns[0]);
     }
 
     if (closedByMerge) {
