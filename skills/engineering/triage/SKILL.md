@@ -86,6 +86,7 @@ Show counts and a one-line summary per item. Let the maintainer pick.
 4. **Grill (if needed).** If the request needs fleshing out, call the Skill tool twice, for "grilling" and "domain-modeling", and grill it into shape a round of questions at a time, sharpening domain terms and updating `CONTEXT.md`/ADRs inline as decisions land.
 
 5. **Apply the outcome:**
+   - **Deliverable or Subtask, first.** Check whether the target is a Subtask (a child of a Deliverable, via the host's native sub-issue relationship). A Subtask never receives a column label: apply the readiness half of the role alone (`ready-for-agent` or `ready-for-human`), never `TODO` or any other column label. Only a Deliverable receives the role's full label set.
    - `ready-for-agent`: post an agent brief comment ([AGENT-BRIEF.md](AGENT-BRIEF.md)).
    - `ready-for-human`: same structure as an agent brief, but note why it can't be delegated (judgment calls, external access, design decisions, manual testing).
    - `needs-info`: post triage notes (template below).
@@ -97,7 +98,7 @@ Show counts and a one-line summary per item. Let the maintainer pick.
 
 ## Quick state override
 
-If the maintainer says "move #42 to ready-for-agent", trust them and apply the role directly. Confirm what you're about to do (role changes, comment, close), then act. Skip grilling. If moving to `ready-for-agent` without a grilling session, ask whether they want to write an agent brief.
+If the maintainer says "move #42 to ready-for-agent", trust them and apply the role directly, but check first whether #42 is a Subtask: if so, apply the readiness label alone, never the column label a Deliverable would get. Confirm what you're about to do (role changes, comment, close), then act. Skip grilling. If moving to `ready-for-agent` without a grilling session, ask whether they want to write an agent brief.
 
 This is the second door into a board's ready column, and the right one for work small enough that the agent brief is the whole spec. The other is `to-tickets`, which moves a Deliverable there once it has both a filled spec and published Subtasks.
 
