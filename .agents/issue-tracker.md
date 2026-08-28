@@ -30,8 +30,9 @@ Used by `to-tickets` and `implement`. A **Deliverable** is one issue, one branch
   not its `#number`. Where sub-issues aren't enabled, put `Part of #<deliverable>` at the top of the
   child body and add it to a task list in the parent body.
 - **List a Deliverable's Subtasks**: `gh api repos/{owner}/{repo}/issues/<n>/sub_issues`.
-- **Close a Subtask**: `gh issue close <n> --comment "..."`. Closing a Deliverable does **not** close
-  its children, so `implement` closes each one as it finishes it.
+- **Close a Subtask**: `gh issue edit <n> --add-label Done`, then `gh issue close <n> --comment "..."`.
+  Closing a Deliverable does **not** close its children, so `implement` closes each one as it
+  finishes it.
 
 ## Label operations
 
@@ -81,4 +82,5 @@ Used by `/wayfinder`. The **map** is a single issue with **child** issues as tic
 - **Blocking**: GitHub's **native issue dependencies**, the canonical, UI-visible representation. Add an edge with `gh api --method POST repos/<owner>/<repo>/issues/<child>/dependencies/blocked_by -F issue_id=<blocker-db-id>`, where `<blocker-db-id>` is the blocker's numeric **database id** (`gh api repos/<owner>/<repo>/issues/<n> --jq .id`, _not_ the `#number` or `node_id`). GitHub reports `issue_dependencies_summary.blocked_by` (open blockers only, the live gate). Where dependencies aren't available, fall back to a `Blocked by: #<n>, #<n>` line at the top of the child body. A ticket is unblocked when every blocker is closed.
 - **Frontier query**: list the map's open children (`gh issue list --state open`, scoped to the map's sub-issues / task list), drop any with an open blocker (`issue_dependencies_summary.blocked_by > 0`, or an open issue in the `Blocked by` line) or an assignee; first in map order wins.
 - **Claim**: `gh issue edit <n> --add-assignee @me`, the session's first write.
-- **Resolve**: `gh issue comment <n> --body "<answer>"`, then `gh issue close <n>`, then append a context pointer (gist + link) to the map's Decisions-so-far.
+- **Resolve**: `gh issue comment <n> --body "<answer>"`, then `gh issue edit <n> --add-label Done`, then `gh issue close <n>`, then append a context pointer (gist + link) to the map's Decisions-so-far.
+- **Rule out of scope**: `gh issue edit <n> --add-label wontfix`, then `gh issue close <n> --comment "<why it's out of scope>"`, then leave one line in the map's Out of scope section.
